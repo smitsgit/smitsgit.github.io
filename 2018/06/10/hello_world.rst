@@ -7,7 +7,7 @@ iter function with sentinnel
 .. tags:: iter
 
 
-Hello Pythonista, did you know that Python iter function has a two arg variant ?
+Hello Pythonistas, did you know that Python iter function has a two arg variant ?
 
 .. code-block:: python
 

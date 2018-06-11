@@ -5,14 +5,92 @@
         <link>http://127.0.0.1/blog/html/</link>
         <description>Blogging for Pythonistas</description>
         <language>en-us</language>
-        <pubDate>Sun, 10 Jun 2018 00:00:00 +0530</pubDate>
+        <pubDate>Mon, 11 Jun 2018 00:00:00 +0530</pubDate>
         
+        <item>
+            <link>http://127.0.0.1/blog/html/2018/06/11/decorator.html</link>
+            <guid>http://127.0.0.1/blog/html/2018/06/11/decorator.html</guid>
+            <title><![CDATA[Understanding decorator pattern with Python]]></title>
+            <description><![CDATA[<h1>Understanding decorator pattern with Python</h1>
+<img alt="../../../_images/hazelnut-cream-hot-chocolate.jpg" src="http://127.0.0.1/blog/html/_images/hazelnut-cream-hot-chocolate.jpg"/>
+<p>Hello Pythonistas, Lets implement decorator pattern in Python.
+I am a big fan of Head first design patterns book so lets take an example from that book.</p>
+<p>When we go to coffee shop like Starbucks or Barista , sometimes
+we also like to add toppings to the coffee of our liking, like <strong>whipped cream / ice cream / nutella.</strong></p>
+<div class="section" id="what-we-are-essentially-doing-is-we-are-decorating-our-coffee-with-these-extra-toppings-or-condiments">
+<h2>What we are essentially doing is we are decorating our coffee with these extra toppings or condiments.</h2>
+<p>Now imagine you are the owner of the coffee shop and you wish to determine the price of such item thats decorated
+with condiments.</p>
+<p>Its safe to say that there is base price associated with coffee and so is with each condiments</p>
+<ol class="arabic simple">
+<li>Coffee - price 50 [ Base price ]</li>
+<li>Whipped Cream - 10</li>
+<li>Nutella - 30</li>
+</ol>
+<ol class="arabic simple">
+<li>If you opt for <strong>coffee with whipped cream</strong> - Price will be 60  [ Base price + 10]</li>
+<li>If you opt for <strong>coffee with Nutella</strong> - Price will be 80  [ Base price + 30 ]</li>
+<li>If you opt for <strong>coffee with Nutella and whipped cream</strong> - Price will be 90 [ Base price + 30 + 10]</li>
+</ol>
+<div class="highlight-python"><div class="highlight"><pre><span/><span class="n">In</span> <span class="p">[</span><span class="mi">82</span><span class="p">]:</span> <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">wraps</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">83</span><span class="p">]:</span> <span class="k">def</span> <span class="nf">whipped_cream</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+    <span class="o">...</span><span class="p">:</span>     <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+    <span class="o">...</span><span class="p">:</span>     <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="o">...</span><span class="p">:</span>         <span class="n">price</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="o">...</span><span class="p">:</span>         <span class="n">price</span> <span class="o">=</span> <span class="n">price</span> <span class="o">+</span> <span class="mi">10</span>
+    <span class="o">...</span><span class="p">:</span>         <span class="k">return</span> <span class="n">price</span>
+    <span class="o">...</span><span class="p">:</span>     <span class="k">return</span> <span class="n">wrapper</span>
+    <span class="o">...</span><span class="p">:</span>
+    <span class="o">...</span><span class="p">:</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">84</span><span class="p">]:</span> <span class="k">def</span> <span class="nf">nutella</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+    <span class="o">...</span><span class="p">:</span>     <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+    <span class="o">...</span><span class="p">:</span>     <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="o">...</span><span class="p">:</span>         <span class="n">price</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="o">...</span><span class="p">:</span>         <span class="n">price</span> <span class="o">=</span> <span class="n">price</span> <span class="o">+</span> <span class="mi">30</span>
+    <span class="o">...</span><span class="p">:</span>         <span class="k">return</span> <span class="n">price</span>
+    <span class="o">...</span><span class="p">:</span>     <span class="k">return</span> <span class="n">wrapper</span>
+    <span class="o">...</span><span class="p">:</span>
+    <span class="o">...</span><span class="p">:</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">85</span><span class="p">]:</span> <span class="k">def</span> <span class="nf">coffee</span><span class="p">():</span>
+    <span class="o">...</span><span class="p">:</span>     <span class="k">return</span> <span class="mi">50</span>
+    <span class="o">...</span><span class="p">:</span>
+    <span class="o">...</span><span class="p">:</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">86</span><span class="p">]:</span> <span class="nd">@whipped_cream</span>
+    <span class="o">...</span><span class="p">:</span> <span class="k">def</span> <span class="nf">coffee_with_whipped_cream</span><span class="p">():</span>
+    <span class="o">...</span><span class="p">:</span>     <span class="k">return</span> <span class="n">coffee</span><span class="p">()</span>
+    <span class="o">...</span><span class="p">:</span>
+    <span class="o">...</span><span class="p">:</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">87</span><span class="p">]:</span> <span class="n">coffee_with_whipped_cream</span><span class="p">()</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">87</span><span class="p">]:</span> <span class="mi">60</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">88</span><span class="p">]:</span> <span class="nd">@whipped_cream</span>
+    <span class="o">...</span><span class="p">:</span> <span class="nd">@nutella</span>
+    <span class="o">...</span><span class="p">:</span> <span class="k">def</span> <span class="nf">coffee_with_nutella_and_whipped_cream</span><span class="p">():</span>
+    <span class="o">...</span><span class="p">:</span>     <span class="k">return</span> <span class="n">coffee</span><span class="p">()</span>
+    <span class="o">...</span><span class="p">:</span>
+    <span class="o">...</span><span class="p">:</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">89</span><span class="p">]:</span> <span class="n">coffee_with_nutella_and_whipped_cream</span><span class="p">()</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">89</span><span class="p">]:</span> <span class="mi">90</span>
+</pre></div>
+</div>
+</div>
+]]></description>
+            <category><![CDATA[ programming ]]></category>
+             <pubDate>Mon, 11 Jun 2018 00:00:00 +0530</pubDate>
+        </item>
+    
         <item>
             <link>http://127.0.0.1/blog/html/2018/06/10/hello_world.html</link>
             <guid>http://127.0.0.1/blog/html/2018/06/10/hello_world.html</guid>
             <title><![CDATA[iter function with sentinnel]]></title>
             <description><![CDATA[<h1>iter function with sentinnel</h1>
-<p>Hello Pythonista, did you know that Python iter function has a two arg variant ?</p>
+<p>Hello Pythonistas, did you know that Python iter function has a two arg variant ?</p>
 <div class="highlight-python"><div class="highlight"><pre><span/><span class="nb">iter</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">sentinnel</span><span class="p">)</span>
 </pre></div>
 </div>

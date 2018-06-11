@@ -15,29 +15,29 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
         <meta name="description" content="Useful python resources and helpful explanations on quirks of the language">
         <meta name="viewport" content="width=device-width">
-        <title>Home &mdash; Pythonista</title>
-            <link rel="stylesheet" href="_static/normalize.css" type="text/css">
-            <link rel="stylesheet" href="_static/sphinx.css" type="text/css">
-            <link rel="stylesheet" href="_static/main.css" type="text/css">
-            <link rel="stylesheet" href="_static/flat.css" type="text/css">
-            <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-            <link rel="stylesheet" href="_static/font-awesome.min.css" type="text/css">
-        <link rel="shortcut icon" href="_static/tinkerer.ico" /><!-- Load modernizr and JQuery -->
-        <script src="_static/vendor/modernizr-2.6.2.min.js"></script>
+        <title>Understanding decorator pattern with Python &mdash; Pythonista</title>
+            <link rel="stylesheet" href="../../../_static/normalize.css" type="text/css">
+            <link rel="stylesheet" href="../../../_static/sphinx.css" type="text/css">
+            <link rel="stylesheet" href="../../../_static/main.css" type="text/css">
+            <link rel="stylesheet" href="../../../_static/flat.css" type="text/css">
+            <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+            <link rel="stylesheet" href="../../../_static/font-awesome.min.css" type="text/css">
+        <link rel="shortcut icon" href="../../../_static/tinkerer.ico" /><!-- Load modernizr and JQuery -->
+        <script src="../../../_static/vendor/modernizr-2.6.2.min.js"></script>
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
-        <script>window.jQuery || document.write('<script src="_static/vendor/jquery-1.8.2.min.js"><\/script>')</script>
-        <script src="_static/plugins.js"></script>
-        <script src="_static/main.js"></script>
-        <link rel="search" title="Search" href="search.html" /><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.html" /><script type="text/javascript">
+        <script>window.jQuery || document.write('<script src="../../../_static/vendor/jquery-1.8.2.min.js"><\/script>')</script>
+        <script src="../../../_static/plugins.js"></script>
+        <script src="../../../_static/main.js"></script>
+        <link rel="search" title="Search" href="../../../search.html" /><link rel="next" title="iter function with sentinnel" href="../10/hello_world.html" /><link rel="alternate" type="application/rss+xml" title="RSS" href="../../../rss.html" /><script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
+        URL_ROOT:    '../../../',
         VERSION:     '1.6.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         SOURCELINK_SUFFIX: '.txt',
         HAS_SOURCE:  true
       };
-    </script><script type="text/javascript" src="_static/underscore.js"></script><script type="text/javascript" src="_static/doctools.js"></script><script type="text/javascript" src="_static/disqus.js"></script>
+    </script><script type="text/javascript" src="../../../_static/underscore.js"></script><script type="text/javascript" src="../../../_static/doctools.js"></script><script type="text/javascript" src="../../../_static/disqus.js"></script>
 
     <script type="text/javascript">
         $(document).ready(function () {
@@ -55,22 +55,22 @@
 
       <div id="container"><header role="banner">
             <hgroup>
-              <h1><a href="#">Pythonista</a></h1><h2>Blogging for Pythonistas</h2></hgroup>
+              <h1><a href="../../../index.html">Pythonista</a></h1><h2>Blogging for Pythonistas</h2></hgroup>
           </header>
       <nav role="navigation">
             <ul><li class="main-nav">
-                  <a href="#">Home</a>
+                  <a href="../../../index.html">Home</a>
                 </li>
               <li class="main-nav">
-                  <a href="pages/about.html">Videos</a>
+                  <a href="../../../pages/about.html">Videos</a>
                 </li>
               </ul>
           </nav><div class="main-container" role="main"><div class="main wrapper body clearfix"><article><div class="timestamp postmeta">
             <span>June 11, 2018</span>
         </div>
-        <div class="section">
-            <h1><a href="2018/06/11/decorator.html">Understanding decorator pattern with Python</a></h1>
-<img alt="../../../_images/hazelnut-cream-hot-chocolate.jpg" src="_images/hazelnut-cream-hot-chocolate.jpg"/>
+    <div class="section" id="understanding-decorator-pattern-with-python">
+<h1>Understanding decorator pattern with Python</h1>
+<img alt="../../../_images/hazelnut-cream-hot-chocolate.jpg" src="../../../_images/hazelnut-cream-hot-chocolate.jpg" />
 <p>Hello Pythonistas, Lets implement decorator pattern in Python.
 I am a big fan of Head first design patterns book so lets take an example from that book.</p>
 <p>When we go to coffee shop like Starbucks or Barista , sometimes
@@ -90,7 +90,7 @@ with condiments.</p>
 <li>If you opt for <strong>coffee with Nutella</strong> - Price will be 80  [ Base price + 30 ]</li>
 <li>If you opt for <strong>coffee with Nutella and whipped cream</strong> - Price will be 90 [ Base price + 30 + 10]</li>
 </ol>
-<div class="highlight-python"><div class="highlight"><pre><span/><span class="n">In</span> <span class="p">[</span><span class="mi">82</span><span class="p">]:</span> <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">wraps</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">82</span><span class="p">]:</span> <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">wraps</span>
 
 <span class="n">In</span> <span class="p">[</span><span class="mi">83</span><span class="p">]:</span> <span class="k">def</span> <span class="nf">whipped_cream</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
     <span class="o">...</span><span class="p">:</span>     <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
@@ -138,146 +138,36 @@ with condiments.</p>
 </pre></div>
 </div>
 </div>
+</div>
 
-        </div>
-        <div class="postmeta">
+    <div class="postmeta">
         <div class="author">
             <span>Posted by Smital Desai</span>
         </div>
         <div class="categories">
             <span>
                 Filed under:
-                <a href="categories/programming.html">programming</a></span>
+                <a href="../../../categories/programming.html">programming</a></span>
         </div>
         <div class="tags">
             <span>
                 Tags:
-                <a href="tags/pattern.html">pattern</a></span>
+                <a href="../../../tags/pattern.html">pattern</a></span>
         </div>
-        </div><div class="separator post_separator"></div><div class="timestamp postmeta">
-            <span>June 10, 2018</span>
-        </div>
-        <div class="section">
-            <h1><a href="2018/06/10/hello_world.html">iter function with sentinnel</a></h1>
-<p>Hello Pythonistas, did you know that Python iter function has a two arg variant ?</p>
-<div class="highlight-python"><div class="highlight"><pre><span/><span class="nb">iter</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">sentinnel</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>However the func - must be a zero argument callable.</p>
-<div class="highlight-python"><div class="highlight"><pre><span/><span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">sentinnel</span><span class="p">):</span>
-    <span class="n">do_something</span><span class="p">()</span>
-</pre></div>
-</div>
-<p>In this case, loop will run only till func produces the sentinnel value.</p>
-<dl class="docutils">
-<dt><strong>Some use cases :</strong></dt>
-<dd><ol class="first last arabic simple">
-<li>Run a game loop for specific duration</li>
-<li>Read lines from file  till particular match is found</li>
-<li>Read data from socket in chunk sizes</li>
-</ol>
-</dd>
-</dl>
-<div class="section" id="first-example">
-<h2>First Example :</h2>
-<div class="highlight-python"><div class="highlight"><pre><span/><span class="n">In</span> <span class="p">[</span><span class="mi">14</span><span class="p">]:</span> <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
-
-<span class="n">In</span> <span class="p">[</span><span class="mi">15</span><span class="p">]:</span> <span class="kn">import</span> <span class="nn">random</span>
-
-<span class="n">In</span> <span class="p">[</span><span class="mi">16</span><span class="p">]:</span> <span class="n">genrate_nums</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span> <span class="c1"># Generate random numbers between 1, 10</span>
-
-<span class="n">In</span> <span class="p">[</span><span class="mi">17</span><span class="p">]:</span> <span class="n">genrate_nums</span><span class="p">()</span> <span class="c1"># a random number between 1 and 10 is returned.</span>
-<span class="n">Out</span><span class="p">[</span><span class="mi">17</span><span class="p">]:</span> <span class="mi">5</span>
-
-<span class="n">In</span> <span class="p">[</span><span class="mi">18</span><span class="p">]:</span> <span class="n">genrate_nums</span><span class="p">()</span>
-<span class="n">Out</span><span class="p">[</span><span class="mi">18</span><span class="p">]:</span> <span class="mi">2</span>
-</pre></div>
-</div>
-<p>Lets look at these two runs. The varying number of iterations in two cases indicate that in the first run the sentinnel
-was returned from our <cite>generate_nums</cite> function when it was called 5th time and in the next run the setinnel value was returned when
-the <cite>generate_nums</cite> was called for 14th time.</p>
-<div class="highlight-python"><div class="highlight"><pre><span/><span class="n">In</span> <span class="p">[</span><span class="mi">23</span><span class="p">]:</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">(</span><span class="n">genrate_nums</span><span class="p">,</span> <span class="mi">5</span><span class="p">):</span>
-    <span class="o">...</span><span class="p">:</span>     <span class="k">print</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-    <span class="o">...</span><span class="p">:</span>
-
-<span class="mi">1</span>
-<span class="mi">2</span>
-<span class="mi">9</span>
-<span class="mi">4</span>
-
-<span class="n">In</span> <span class="p">[</span><span class="mi">24</span><span class="p">]:</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">(</span><span class="n">genrate_nums</span><span class="p">,</span> <span class="mi">5</span><span class="p">):</span>
-    <span class="o">...</span><span class="p">:</span>     <span class="k">print</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-    <span class="o">...</span><span class="p">:</span>
-
-<span class="mi">4</span>
-<span class="mi">10</span>
-<span class="mi">9</span>
-<span class="mi">3</span>
-<span class="mi">2</span>
-<span class="mi">8</span>
-<span class="mi">1</span>
-<span class="mi">9</span>
-<span class="mi">3</span>
-<span class="mi">7</span>
-<span class="mi">8</span>
-<span class="mi">3</span>
-<span class="mi">2</span>
-<span class="mi">1</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="second-example">
-<h2>Second Example :</h2>
-<p>Lets look at another example where we have a file called ‘hello.txt’
-We wish to read lines in file will the line contains “hello”
-So effectively we wish to read only first two lines in this files.</p>
-<p>Lets see how we can go about achieving the same.</p>
-<div class="highlight-python"><div class="highlight"><pre><span/><span class="n">In</span> <span class="p">[</span><span class="mi">14</span><span class="p">]:</span> <span class="n">cat</span> <span class="s1">'hello.txt'</span>
-<span class="n">sdfasd</span>
-<span class="n">sdfdfdf</span>
-<span class="n">hello</span>
-<span class="n">sdfasd</span>
-<span class="n">asdfasd</span>
-
-<span class="n">In</span> <span class="p">[</span><span class="mi">15</span><span class="p">]:</span> <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'hello.txt'</span><span class="p">)</span> <span class="k">as</span> <span class="nb">file</span><span class="p">:</span>
-    <span class="o">...</span><span class="p">:</span>     <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">(</span><span class="nb">file</span><span class="o">.</span><span class="n">readline</span><span class="p">,</span> <span class="s2">"hello</span><span class="se">\n</span><span class="s2">"</span><span class="p">):</span>
-    <span class="o">...</span><span class="p">:</span>         <span class="k">print</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">''</span><span class="p">)</span>
-    <span class="o">...</span><span class="p">:</span>
-    <span class="o">...</span><span class="p">:</span>
-<span class="n">sdfasd</span>
-<span class="n">sdfdfdf</span>
-</pre></div>
-</div>
-</div>
-
-        </div>
-        <div class="postmeta">
-        <div class="author">
-            <span>Posted by Smital Desai</span>
-        </div>
-        <div class="categories">
-            <span>
-                Filed under:
-                <a href="categories/trick.html">trick</a></span>
-        </div>
-        <div class="tags">
-            <span>
-                Tags:
-                <a href="tags/iter.html">iter</a></span>
-        </div>
-        </div><div class="archive_link">
-        <a href="archive.html"> &mdash; Blog Archive &mdash; </a>
-    </div></article><aside class="sidebar"><section><div class="widget">
+        </div><ul class="related clearfix">
+            <li class="left"></li>
+            <li class="right"><a href="../10/hello_world.html">iter function with sentinnel</a> &raquo; </li>
+        </ul></article><aside class="sidebar"><section><div class="widget">
     <h1>Recent Posts</h1>
     <ul><li>
-            <a href="2018/06/11/decorator.html">Understanding decorator pattern with Python</a>
+            <a href="#">Understanding decorator pattern with Python</a>
         </li><li>
-            <a href="2018/06/10/hello_world.html">iter function with sentinnel</a>
+            <a href="../10/hello_world.html">iter function with sentinnel</a>
         </li></ul>
 </div>
 </section><section><div class="widget" id="searchbox" role="search">
     <h1><a href="#searchbox">Search</a></h1>
-    <form action="search.html" method="get">
+    <form action="../../../search.html" method="get">
         <input type="text" name="q" />
         <button type="submit"><span class="fa fa-search"></span></button>
     </form>

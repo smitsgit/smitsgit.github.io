@@ -39,7 +39,6 @@ html_favicon = '_static/tinkerer.ico'
 
 # Pick another Tinkerer theme or use your own
 html_theme = 'flat'
-
 # Theme-specific options, see docs
 html_theme_options = {}
 
@@ -67,7 +66,7 @@ first_page_title = None
 # **************************************************************
 
 # Add other Sphinx extensions here
-extensions = ['tinkerer.ext.blog', 'tinkerer.ext.disqus']
+extensions = ['tinkerer.ext.blog', 'tinkerer.ext.disqus', 'sphinxcontrib.youtube']
 
 # Add other template paths here
 templates_path = ['_templates']
@@ -88,7 +87,6 @@ html_sidebars = {
 
 # Add an index to the HTML documents.
 html_use_index = False
-
 # **************************************************************
 # Do not modify below lines as the values are required by
 # Tinkerer to play nice with Sphinx
