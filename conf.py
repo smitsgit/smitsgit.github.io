@@ -4,6 +4,7 @@
 
 import tinkerer
 import tinkerer.paths
+from recommonmark.parser import CommonMarkParser
 
 # **************************************************************
 # TODO: Edit the lines below
@@ -91,6 +92,12 @@ html_use_index = False
 # Do not modify below lines as the values are required by
 # Tinkerer to play nice with Sphinx
 # **************************************************************
+
+source_parsers = {
+    '.md': CommonMarkParser,
+}
+
+source_suffix = ['.rst', '.md']
 
 source_suffix = tinkerer.source_suffix
 master_doc = tinkerer.master_doc
