@@ -15,7 +15,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
         <meta name="description" content="Useful python resources and helpful explanations on quirks of the language">
         <meta name="viewport" content="width=device-width">
-        <title>Hello World! &mdash; Pythonista</title>
+        <title>iter function with sentinnel &mdash; Pythonista</title>
             <link rel="stylesheet" href="../../../_static/normalize.css" type="text/css">
             <link rel="stylesheet" href="../../../_static/sphinx.css" type="text/css">
             <link rel="stylesheet" href="../../../_static/main.css" type="text/css">
@@ -62,65 +62,124 @@
                   <a href="../../../index.html">Home</a>
                 </li>
               <li class="main-nav">
-                  <a href="../../../pages/about.html">About</a>
+                  <a href="../../../pages/about.html">Videos</a>
                 </li>
               </ul>
           </nav><div class="main-container" role="main"><div class="main wrapper body clearfix"><article><div class="timestamp postmeta">
             <span>June 10, 2018</span>
         </div>
-    <div class="section" id="hello-world">
-<h1>Hello World!</h1>
-<ul class="simple">
-<li>This is a bulleted list.</li>
-<li>It has two items, the second
-item uses two lines.</li>
-</ul>
-<ol class="arabic simple">
-<li>This is a numbered list.</li>
-<li>It has two items too.</li>
-<li>This is a numbered list.</li>
-<li>It has two items too.</li>
+    <div class="section" id="iter-function-with-sentinnel">
+<h1>iter function with sentinnel</h1>
+<p>Hello Pythonista, did you know that Python iter function has a two arg variant ?</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="nb">iter</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">sentinnel</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>However the func - must be a zero argument callable.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">sentinnel</span><span class="p">):</span>
+    <span class="n">do_something</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>In this case, loop will run only till func produces the sentinnel value.</p>
+<dl class="docutils">
+<dt><strong>Some use cases :</strong></dt>
+<dd><ol class="first last arabic simple">
+<li>Run a game loop for specific duration</li>
+<li>Read lines from file  till particular match is found</li>
+<li>Read data from socket in chunk sizes</li>
 </ol>
-<table border="1" class="docutils">
-<colgroup>
-<col width="43%" />
-<col width="21%" />
-<col width="18%" />
-<col width="18%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Header row, column 1
-(header rows optional)</th>
-<th class="head">Header 2</th>
-<th class="head">Header 3</th>
-<th class="head">Header 4</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td>body row 1, column 1</td>
-<td>column 2</td>
-<td>column 3</td>
-<td>column 4</td>
-</tr>
-<tr class="row-odd"><td>body row 2</td>
-<td>…</td>
-<td>…</td>
-<td>&#160;</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
+<div class="section" id="first-example">
+<h2>First Example :</h2>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">14</span><span class="p">]:</span> <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">15</span><span class="p">]:</span> <span class="kn">import</span> <span class="nn">random</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">16</span><span class="p">]:</span> <span class="n">genrate_nums</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span> <span class="c1"># Generate random numbers between 1, 10</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">17</span><span class="p">]:</span> <span class="n">genrate_nums</span><span class="p">()</span> <span class="c1"># a random number between 1 and 10 is returned.</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">17</span><span class="p">]:</span> <span class="mi">5</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">18</span><span class="p">]:</span> <span class="n">genrate_nums</span><span class="p">()</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">18</span><span class="p">]:</span> <span class="mi">2</span>
+</pre></div>
+</div>
+<p>Lets look at these two runs. The varying number of iterations in two cases indicate that in the first run the sentinnel
+was returned from our <cite>generate_nums</cite> function when it was called 5th time and in the next run the setinnel value was returned when
+the <cite>generate_nums</cite> was called for 14th time.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">23</span><span class="p">]:</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">(</span><span class="n">genrate_nums</span><span class="p">,</span> <span class="mi">5</span><span class="p">):</span>
+    <span class="o">...</span><span class="p">:</span>     <span class="k">print</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+    <span class="o">...</span><span class="p">:</span>
+
+<span class="mi">1</span>
+<span class="mi">2</span>
+<span class="mi">9</span>
+<span class="mi">4</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">24</span><span class="p">]:</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">(</span><span class="n">genrate_nums</span><span class="p">,</span> <span class="mi">5</span><span class="p">):</span>
+    <span class="o">...</span><span class="p">:</span>     <span class="k">print</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+    <span class="o">...</span><span class="p">:</span>
+
+<span class="mi">4</span>
+<span class="mi">10</span>
+<span class="mi">9</span>
+<span class="mi">3</span>
+<span class="mi">2</span>
+<span class="mi">8</span>
+<span class="mi">1</span>
+<span class="mi">9</span>
+<span class="mi">3</span>
+<span class="mi">7</span>
+<span class="mi">8</span>
+<span class="mi">3</span>
+<span class="mi">2</span>
+<span class="mi">1</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="second-example">
+<h2>Second Example :</h2>
+<p>Lets look at another example where we have a file called ‘hello.txt’
+We wish to read lines in file will the line contains “hello”
+So effectively we wish to read only first two lines in this files.</p>
+<p>Lets see how we can go about achieving the same.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">14</span><span class="p">]:</span> <span class="n">cat</span> <span class="s1">&#39;hello.txt&#39;</span>
+<span class="n">sdfasd</span>
+<span class="n">sdfdfdf</span>
+<span class="n">hello</span>
+<span class="n">sdfasd</span>
+<span class="n">asdfasd</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">15</span><span class="p">]:</span> <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;hello.txt&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="nb">file</span><span class="p">:</span>
+    <span class="o">...</span><span class="p">:</span>     <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">(</span><span class="nb">file</span><span class="o">.</span><span class="n">readline</span><span class="p">,</span> <span class="s2">&quot;hello</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">):</span>
+    <span class="o">...</span><span class="p">:</span>         <span class="k">print</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="o">...</span><span class="p">:</span>
+    <span class="o">...</span><span class="p">:</span>
+<span class="n">sdfasd</span>
+<span class="n">sdfdfdf</span>
+</pre></div>
+</div>
+</div>
 </div>
 
     <div class="postmeta">
         <div class="author">
             <span>Posted by Smital Desai</span>
         </div>
-        
-        
+        <div class="categories">
+            <span>
+                Filed under:
+                <a href="../../../categories/trick.html">trick</a></span>
+        </div>
+        <div class="tags">
+            <span>
+                Tags:
+                <a href="../../../tags/iter.html">iter</a></span>
+        </div>
         </div></article><aside class="sidebar"><section><div class="widget">
     <h1>Recent Posts</h1>
     <ul><li>
-            <a href="#">Hello World!</a>
+            <a href="#">iter function with sentinnel</a>
         </li></ul>
 </div>
 </section><section><div class="widget" id="searchbox" role="search">
