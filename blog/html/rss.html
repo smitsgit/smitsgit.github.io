@@ -5,8 +5,223 @@
         <link>http://127.0.0.1/blog/html/</link>
         <description>Blogging for Pythonistas</description>
         <language>en-us</language>
-        <pubDate>Mon, 11 Jun 2018 00:00:00 +0530</pubDate>
+        <pubDate>Tue, 12 Jun 2018 00:00:00 +0530</pubDate>
         
+        <item>
+            <link>http://127.0.0.1/blog/html/2018/06/12/chain_of_responsibility.html</link>
+            <guid>http://127.0.0.1/blog/html/2018/06/12/chain_of_responsibility.html</guid>
+            <title><![CDATA[Design Pattern : Chain of responsibility [Python]]]></title>
+            <description><![CDATA[<h1>Design Pattern : Chain of responsibility [Python]</h1>
+<img alt="../../../_images/chain_of_responsibility.png" src="http://127.0.0.1/blog/html/_images/chain_of_responsibility.png"/>
+<p>Hello Pythonistas, Lets dive into chain of responsibility pattern.</p>
+<p>Its in fact pretty easy to understand. As shown in diagram above. We have chain of handlers , once the event is generated , its
+passed to the first handler in chain.</p>
+<p>If the handler is able to process the event, the event gets consumed
+but if the handler is unable to process the event, handler then passes this event to the next handler in chain.</p>
+<div class="section" id="the-bottom-line-is-handlers-should-pass-the-event-that-they-cant-process-to-next-handler-in-chain">
+<h2>The bottom line is handlers should pass the event that they cant process, to next handler in chain</h2>
+<p>This can be achieved by traditional way using classes for handlers  and making them implement a common process method
+but in this post we are going to see how coroutines can be used as handlers and how can we form chain of coroutines.</p>
+<p>This recipe is present in book <a class="reference external" href="https://www.amazon.com/Python-Practice-Concurrency-Libraries-Developers/dp/0321905636">Python in Practice</a>. I would highly encourage everyone reading this book.</p>
+<p>Before we look at the recipe, lets refresh our knowledge of generators and corotuines in Python.</p>
+<ul>
+<li><dl class="first docutils">
+<dt><strong>Generators:</strong></dt>
+<dd><p class="first">Any python function with yield keyword is a generator. Generators are actually producer of items. They not only
+produce the item , but they yield control back to the client so that client can process it.</p>
+<p>Generators are driven by client : What i mean by that is , unless client asks for the next item , Generators wont produce
+the next item. This is significatnly important cause it drastically reduces the memory footprint and avoids unnecessary
+processing of the items at the source just to find out later that client is interested in only of subset of it.</p>
+<p><strong>To drive the point home, client pulls the item out of generator cause generator is the producer of item upon clients request.</strong></p>
+<p class="last">yield item</p>
+</dd>
+</dl>
+</li>
+</ul>
+<img alt="../../../_images/generator_explanation.png" src="http://127.0.0.1/blog/html/_images/generator_explanation.png"/>
+<ul>
+<li><dl class="first docutils">
+<dt><strong>Coroutines:</strong></dt>
+<dd><p class="first">If you look at coroutines , they look pretty similar to generators by the semantics. Yes they have the yield keyword in their
+function body. But the way it appears is definitely different, its on the right side of an expression.</p>
+<p>item = yield</p>
+<p><strong>Fundamental difference when comapred to generators, is that client pushes value into coroutines and it remains suspended till client pushes new value</strong></p>
+<p class="last">coro.send(10)</p>
+</dd>
+</dl>
+</li>
+</ul>
+<img alt="../../../_images/coro_example.png" src="http://127.0.0.1/blog/html/_images/coro_example.png"/>
+<p>Now that we have basics of Generators and Coroutines under the belt lets move on to seeing how we can code chain of responsibility
+using coroutines.</p>
+<p>So to develop an intuition around it, for chain of responsibility we need chain of handlers and we need to be able to <strong>push</strong> event
+to first and subsequent handlers based on the current handler was able to process it or not.</p>
+<p>So what if our couroutines knew whom to pass the event if they are not able to handle the pushed event, the current coroutine becomes client(pusher) for the next coroutine.</p>
+<p>Also if current coroutine is able to handle the pushed item or not, can be any condition; simple or complex and in our example its as simple as string comparison.</p>
+<p>Now as show below we have three events and three distinct handlers for that
+SongHandler-&gt;ImageHandler-&gt;SlackHandler to handle these events.</p>
+<p>every handler takes its successor as an input and thus we are able to make chain.</p>
+<div class="highlight-python"><div class="highlight"><pre><span/><span class="n">pipeline</span> <span class="o">=</span> <span class="n">SongHandler</span><span class="p">(</span><span class="n">ImageHandler</span><span class="p">(</span><span class="n">SlackHandler</span><span class="p">()))</span>
+</pre></div>
+</div>
+<p>Now go ahead and give below code a good read and i am sure you will be able to appreciate the beauty of the solution.</p>
+<div class="highlight-python"><div class="highlight"><pre><span/><span class="n">In</span> <span class="p">[</span><span class="mi">107</span><span class="p">]:</span> <span class="n">events</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"Downloaded Song"</span><span class="p">,</span> <span class="s2">"Downloaded PNG image"</span><span class="p">,</span> <span class="s2">"Slack notification"</span><span class="p">]</span>
+
+    <span class="n">In</span> <span class="p">[</span><span class="mi">108</span><span class="p">]:</span> <span class="k">def</span> <span class="nf">SongHandler</span><span class="p">(</span><span class="n">successor</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+         <span class="o">...</span><span class="p">:</span>     <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+         <span class="o">...</span><span class="p">:</span>         <span class="n">event</span> <span class="o">=</span> <span class="k">yield</span>
+         <span class="o">...</span><span class="p">:</span>         <span class="k">if</span> <span class="n">event</span> <span class="o">==</span> <span class="s2">"Downloaded Song"</span><span class="p">:</span>
+         <span class="o">...</span><span class="p">:</span>             <span class="k">print</span><span class="p">(</span><span class="s2">"I am handling this song"</span><span class="p">)</span>
+         <span class="o">...</span><span class="p">:</span>         <span class="k">else</span><span class="p">:</span>
+         <span class="o">...</span><span class="p">:</span>            <span class="k">print</span><span class="p">(</span><span class="n">f</span><span class="s2">"I cant handle {event}"</span><span class="p">)</span>
+         <span class="o">...</span><span class="p">:</span>            <span class="k">if</span> <span class="n">successor</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+         <span class="o">...</span><span class="p">:</span>                <span class="n">successor</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+         <span class="o">...</span><span class="p">:</span>            <span class="k">else</span><span class="p">:</span>
+         <span class="o">...</span><span class="p">:</span>                <span class="k">print</span><span class="p">(</span><span class="n">f</span><span class="s2">"Cant handle the {event}"</span><span class="p">)</span>
+         <span class="o">...</span><span class="p">:</span>
+
+    <span class="n">In</span> <span class="p">[</span><span class="mi">109</span><span class="p">]:</span> <span class="n">d</span> <span class="o">=</span> <span class="n">SongHandler</span><span class="p">()</span>
+
+    <span class="n">In</span> <span class="p">[</span><span class="mi">110</span><span class="p">]:</span> <span class="n">d</span>
+    <span class="n">Out</span><span class="p">[</span><span class="mi">110</span><span class="p">]:</span> <span class="o">&lt;</span><span class="n">generator</span> <span class="nb">object</span> <span class="n">SongHandler</span> <span class="n">at</span> <span class="mh">0x105e29830</span><span class="o">&gt;</span>
+
+    <span class="n">In</span> <span class="p">[</span><span class="mi">111</span><span class="p">]:</span> <span class="kn">from</span> <span class="nn">inspect</span> <span class="kn">import</span> <span class="n">getgeneratorstate</span>
+
+    <span class="n">In</span> <span class="p">[</span><span class="mi">112</span><span class="p">]:</span> <span class="n">getgeneratorstate</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+    <span class="n">Out</span><span class="p">[</span><span class="mi">112</span><span class="p">]:</span> <span class="s1">'GEN_CREATED'</span>
+
+    <span class="n">In</span> <span class="p">[</span><span class="mi">113</span><span class="p">]:</span> <span class="nb">next</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+
+    <span class="n">In</span> <span class="p">[</span><span class="mi">114</span><span class="p">]:</span> <span class="n">getgeneratorstate</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+    <span class="n">Out</span><span class="p">[</span><span class="mi">114</span><span class="p">]:</span> <span class="s1">'GEN_SUSPENDED'</span>
+
+    <span class="n">In</span> <span class="p">[</span><span class="mi">115</span><span class="p">]:</span> <span class="n">d</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s2">"Downloaded PNG image"</span><span class="p">)</span>
+    <span class="n">I</span> <span class="n">cant</span> <span class="n">handle</span> <span class="n">Downloaded</span> <span class="n">PNG</span> <span class="n">image</span>
+    <span class="n">Cant</span> <span class="n">handle</span> <span class="n">the</span> <span class="n">Downloaded</span> <span class="n">PNG</span> <span class="n">image</span>
+
+
+    <span class="n">In</span> <span class="p">[</span><span class="mi">116</span><span class="p">]:</span> <span class="k">def</span> <span class="nf">ImageHandler</span><span class="p">(</span><span class="n">successor</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+     <span class="o">...</span><span class="p">:</span>     <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+     <span class="o">...</span><span class="p">:</span>        <span class="n">event</span> <span class="o">=</span> <span class="k">yield</span>
+     <span class="o">...</span><span class="p">:</span>        <span class="k">if</span> <span class="n">event</span> <span class="o">==</span> <span class="s2">"Downloaded PNG image"</span><span class="p">:</span>
+     <span class="o">...</span><span class="p">:</span>           <span class="k">print</span><span class="p">(</span><span class="s2">"I am handling this PNG image"</span><span class="p">)</span>
+     <span class="o">...</span><span class="p">:</span>        <span class="k">else</span><span class="p">:</span>
+     <span class="o">...</span><span class="p">:</span>           <span class="k">print</span><span class="p">(</span><span class="n">f</span><span class="s2">"I cant handle event : {event}"</span><span class="p">)</span>
+     <span class="o">...</span><span class="p">:</span>           <span class="k">if</span> <span class="n">successor</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+     <span class="o">...</span><span class="p">:</span>              <span class="n">successor</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+     <span class="o">...</span><span class="p">:</span>           <span class="k">else</span><span class="p">:</span>
+     <span class="o">...</span><span class="p">:</span>              <span class="k">print</span><span class="p">(</span><span class="n">f</span><span class="s2">"Cant handle the event : {event}"</span><span class="p">)</span>
+     <span class="o">...</span><span class="p">:</span>
+
+    <span class="n">In</span> <span class="p">[</span><span class="mi">117</span><span class="p">]:</span>
+
+    <span class="n">In</span> <span class="p">[</span><span class="mi">117</span><span class="p">]:</span> <span class="n">pipeline</span> <span class="o">=</span> <span class="n">SongHandler</span><span class="p">(</span><span class="n">ImageHandler</span><span class="p">())</span>
+
+    <span class="n">In</span> <span class="p">[</span><span class="mi">118</span><span class="p">]:</span> <span class="n">pipeline</span>
+    <span class="n">Out</span><span class="p">[</span><span class="mi">118</span><span class="p">]:</span> <span class="o">&lt;</span><span class="n">generator</span> <span class="nb">object</span> <span class="n">SongHandler</span> <span class="n">at</span> <span class="mh">0x1065cef68</span><span class="o">&gt;</span>
+
+    <span class="n">In</span> <span class="p">[</span><span class="mi">119</span><span class="p">]:</span> <span class="nb">next</span><span class="p">(</span><span class="n">pipeline</span><span class="p">)</span>
+
+    <span class="n">In</span> <span class="p">[</span><span class="mi">120</span><span class="p">]:</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s2">"Downloaded PNG image"</span><span class="p">)</span>
+    <span class="n">I</span> <span class="n">cant</span> <span class="n">handle</span> <span class="n">Downloaded</span> <span class="n">PNG</span> <span class="n">image</span>
+
+
+    <span class="o">---------------------------------------------------------------------------</span>
+    <span class="ne">TypeError</span>                                 <span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">)</span>
+    <span class="o">&lt;</span><span class="n">ipython</span><span class="o">-</span><span class="nb">input</span><span class="o">-</span><span class="mi">120</span><span class="o">-</span><span class="n">beb994dea500</span><span class="o">&gt;</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span><span class="p">()</span>
+    <span class="o">----&gt;</span> <span class="mi">1</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s2">"Downloaded PNG image"</span><span class="p">)</span>
+
+    <span class="o">&lt;</span><span class="n">ipython</span><span class="o">-</span><span class="nb">input</span><span class="o">-</span><span class="mi">108</span><span class="o">-</span><span class="mi">48988309</span><span class="n">dc83</span><span class="o">&gt;</span> <span class="ow">in</span> <span class="n">SongHandler</span><span class="p">(</span><span class="n">successor</span><span class="p">)</span>
+          <span class="mi">7</span>            <span class="k">print</span><span class="p">(</span><span class="n">f</span><span class="s2">"I cant handle {event}"</span><span class="p">)</span>
+          <span class="mi">8</span>            <span class="k">if</span> <span class="n">successor</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="o">----&gt;</span> <span class="mi">9</span>                <span class="n">successor</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+         <span class="mi">10</span>            <span class="k">else</span><span class="p">:</span>
+         <span class="mi">11</span>                <span class="k">print</span><span class="p">(</span><span class="n">f</span><span class="s2">"Cant handle the {event}"</span><span class="p">)</span>
+
+    <span class="ne">TypeError</span><span class="p">:</span> <span class="n">can</span><span class="s1">'t send non-None value to a just-started generator</span>
+
+    <span class="n">In</span> <span class="p">[</span><span class="mi">121</span><span class="p">]:</span> <span class="c1"># This is where its important to understand the priming of the generator. Now we did prime the SongHandl</span>
+          <span class="o">...</span><span class="p">:</span> <span class="n">er</span> <span class="n">by</span> <span class="n">doing</span> <span class="nb">next</span><span class="p">(</span><span class="n">pipeline</span><span class="p">)</span> <span class="n">but</span> <span class="n">SongHandler</span> <span class="n">has</span> <span class="n">Imagehandler</span> <span class="k">as</span> <span class="n">prameter</span> <span class="n">SongHandler</span><span class="p">(</span><span class="n">ImageHandler</span><span class="p">())</span> <span class="n">whic</span>
+          <span class="o">...</span><span class="p">:</span> <span class="n">h</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">primed</span><span class="o">.</span>
+
+    <span class="n">In</span> <span class="p">[</span><span class="mi">122</span><span class="p">]:</span> <span class="c1"># Thats the reason why we see this TypeError : can't send non-None value to a just-started generator</span>
+
+
+    <span class="n">In</span> <span class="p">[</span><span class="mi">123</span><span class="p">]:</span> <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">wraps</span>
+
+    <span class="n">In</span> <span class="p">[</span><span class="mi">124</span><span class="p">]:</span> <span class="k">def</span> <span class="nf">coroutine</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+      <span class="o">...</span><span class="p">:</span>     <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+      <span class="o">...</span><span class="p">:</span>     <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+      <span class="o">...</span><span class="p">:</span>         <span class="n">gen</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+      <span class="o">...</span><span class="p">:</span>         <span class="nb">next</span><span class="p">(</span><span class="n">gen</span><span class="p">)</span>         <span class="c1"># The only thing that it does is moves generator to suspended state from created state to</span>
+                                     <span class="c1"># avoid above error</span>
+      <span class="o">...</span><span class="p">:</span>         <span class="k">return</span> <span class="n">gen</span>
+      <span class="o">...</span><span class="p">:</span>     <span class="k">return</span> <span class="n">wrapper</span>
+      <span class="o">...</span><span class="p">:</span>
+      <span class="o">...</span><span class="p">:</span>
+
+              <span class="nd">@coroutine</span>
+      <span class="o">...</span><span class="p">:</span> <span class="k">def</span> <span class="nf">SongHandler</span><span class="p">(</span><span class="n">successor</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+      <span class="o">...</span><span class="p">:</span>       <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+      <span class="o">...</span><span class="p">:</span>           <span class="n">event</span> <span class="o">=</span> <span class="k">yield</span>
+      <span class="o">...</span><span class="p">:</span>           <span class="k">if</span> <span class="n">event</span> <span class="o">==</span> <span class="s2">"Downloaded Song"</span><span class="p">:</span>
+      <span class="o">...</span><span class="p">:</span>               <span class="k">print</span><span class="p">(</span><span class="s2">"[SongHandler] : handling this song"</span><span class="p">)</span>
+      <span class="o">...</span><span class="p">:</span>           <span class="k">else</span><span class="p">:</span>
+      <span class="o">...</span><span class="p">:</span>              <span class="k">print</span><span class="p">(</span><span class="n">f</span><span class="s2">"[SongHandler] : cant handle {event}"</span><span class="p">)</span>
+      <span class="o">...</span><span class="p">:</span>              <span class="k">if</span> <span class="n">successor</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+      <span class="o">...</span><span class="p">:</span>                  <span class="n">successor</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+      <span class="o">...</span><span class="p">:</span>              <span class="k">else</span>  <span class="p">:</span>
+      <span class="o">...</span><span class="p">:</span>                  <span class="k">print</span><span class="p">(</span><span class="n">f</span><span class="s2">"Cant handle the {event}"</span><span class="p">)</span>
+      <span class="o">...</span><span class="p">:</span>
+      <span class="o">...</span><span class="p">:</span>
+      <span class="o">...</span><span class="p">:</span> <span class="nd">@coroutine</span>
+      <span class="o">...</span><span class="p">:</span> <span class="k">def</span> <span class="nf">ImageHandler</span><span class="p">(</span><span class="n">successor</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+      <span class="o">...</span><span class="p">:</span>       <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+      <span class="o">...</span><span class="p">:</span>          <span class="n">event</span> <span class="o">=</span> <span class="k">yield</span>
+      <span class="o">...</span><span class="p">:</span>          <span class="k">if</span> <span class="n">event</span> <span class="o">==</span> <span class="s2">"Downloaded PNG image"</span><span class="p">:</span>
+      <span class="o">...</span><span class="p">:</span>             <span class="k">print</span><span class="p">(</span><span class="s2">"[ImageHandler] : handling this PNG image"</span><span class="p">)</span>
+      <span class="o">...</span><span class="p">:</span>          <span class="k">else</span><span class="p">:</span>
+      <span class="o">...</span><span class="p">:</span>             <span class="k">print</span><span class="p">(</span><span class="n">f</span><span class="s2">"[ImageHandler] : cant handle event : {event}"</span><span class="p">)</span>
+      <span class="o">...</span><span class="p">:</span>             <span class="k">if</span> <span class="n">successor</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+      <span class="o">...</span><span class="p">:</span>                <span class="n">successor</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+      <span class="o">...</span><span class="p">:</span>             <span class="k">else</span><span class="p">:</span>
+      <span class="o">...</span><span class="p">:</span>                <span class="k">print</span><span class="p">(</span><span class="n">f</span><span class="s2">"[ImageHandler] : No more takers for this event. Getting dropped :-("</span><span class="p">)</span>
+
+                  <span class="nd">@coroutine</span>
+      <span class="o">...</span><span class="p">:</span> <span class="k">def</span> <span class="nf">SlackHandler</span><span class="p">(</span><span class="n">successor</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+      <span class="o">...</span><span class="p">:</span>       <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+      <span class="o">...</span><span class="p">:</span>          <span class="n">event</span> <span class="o">=</span> <span class="k">yield</span>
+      <span class="o">...</span><span class="p">:</span>          <span class="k">if</span> <span class="n">event</span> <span class="o">==</span> <span class="s2">"Slack notification"</span><span class="p">:</span>
+      <span class="o">...</span><span class="p">:</span>             <span class="k">print</span><span class="p">(</span><span class="s2">"[ SlackHandler ] : handling this slack notification"</span><span class="p">)</span>
+      <span class="o">...</span><span class="p">:</span>          <span class="k">else</span><span class="p">:</span>
+      <span class="o">...</span><span class="p">:</span>             <span class="k">print</span><span class="p">(</span><span class="n">f</span><span class="s2">"[ SlackHandler ] : cant handle event : {event}"</span><span class="p">)</span>
+      <span class="o">...</span><span class="p">:</span>             <span class="k">if</span> <span class="n">successor</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+      <span class="o">...</span><span class="p">:</span>                <span class="n">successor</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+      <span class="o">...</span><span class="p">:</span>             <span class="k">else</span><span class="p">:</span>
+      <span class="o">...</span><span class="p">:</span>                <span class="k">print</span><span class="p">(</span><span class="n">f</span><span class="s2">"[ SlackHandler ] No more handlers for this event : {event}. Getting dropped :-("</span><span class="p">)</span>
+      <span class="o">...</span><span class="p">:</span>
+
+    <span class="n">pipeline</span> <span class="o">=</span> <span class="n">SongHandler</span><span class="p">(</span><span class="n">ImageHandler</span><span class="p">(</span><span class="n">SlackHandler</span><span class="p">()))</span>
+
+    <span class="n">In</span> <span class="p">[</span><span class="mi">139</span><span class="p">]:</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s2">"Slack notification"</span><span class="p">)</span>
+    <span class="p">[</span><span class="n">SongHandler</span><span class="p">]</span> <span class="p">:</span> <span class="n">cant</span> <span class="n">handle</span> <span class="n">Slack</span> <span class="n">notification</span>
+    <span class="p">[</span><span class="n">ImageHandler</span><span class="p">]</span> <span class="p">:</span> <span class="n">cant</span> <span class="n">handle</span> <span class="n">event</span> <span class="p">:</span> <span class="n">Slack</span> <span class="n">notification</span>
+    <span class="p">[</span> <span class="n">SlackHandler</span> <span class="p">]</span> <span class="p">:</span> <span class="n">handling</span> <span class="n">this</span> <span class="n">slack</span> <span class="n">notification</span>
+
+    <span class="n">In</span> <span class="p">[</span><span class="mi">140</span><span class="p">]:</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s2">"Downloaded PNG image"</span><span class="p">)</span>
+    <span class="p">[</span><span class="n">SongHandler</span><span class="p">]</span> <span class="p">:</span> <span class="n">cant</span> <span class="n">handle</span> <span class="n">Downloaded</span> <span class="n">PNG</span> <span class="n">image</span>
+    <span class="p">[</span><span class="n">ImageHandler</span><span class="p">]</span> <span class="p">:</span> <span class="n">handling</span> <span class="n">this</span> <span class="n">PNG</span> <span class="n">image</span>
+
+    <span class="n">In</span> <span class="p">[</span><span class="mi">141</span><span class="p">]:</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s2">"Downloaded Song"</span><span class="p">)</span>
+    <span class="p">[</span><span class="n">SongHandler</span><span class="p">]</span> <span class="p">:</span> <span class="n">handling</span> <span class="n">this</span> <span class="n">song</span>
+</pre></div>
+</div>
+</div>
+]]></description>
+            <category><![CDATA[ programming ]]></category>
+             <pubDate>Tue, 12 Jun 2018 00:00:00 +0530</pubDate>
+        </item>
+    
         <item>
             <link>http://127.0.0.1/blog/html/2018/06/11/decorator.html</link>
             <guid>http://127.0.0.1/blog/html/2018/06/11/decorator.html</guid>
