@@ -1,5 +1,5 @@
 ========================================================
-Understanding TFTP proto and write TFTP client in Python
+Understanding TFTP protocol and write TFTP client in Python
 ========================================================
 
 .. author:: Smital Desai
