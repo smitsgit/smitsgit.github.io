@@ -1,0 +1,540 @@
+<!DOCTYPE html><!--[if lt IE 7]>      <html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:og="http://ogp.me/ns#"
+    xmlns:fb="https://www.facebook.com/2008/fbml" class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:og="http://ogp.me/ns#"
+    xmlns:fb="https://www.facebook.com/2008/fbml" class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:og="http://ogp.me/ns#"
+    xmlns:fb="https://www.facebook.com/2008/fbml" class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:og="http://ogp.me/ns#"
+    xmlns:fb="https://www.facebook.com/2008/fbml" class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="description" content="Useful python resources and helpful explanations on quirks of the language">
+        <meta name="viewport" content="width=device-width">
+        <title>Understanding TFTP proto and write TFTP client in Python &mdash; Pythonista</title>
+            <link rel="stylesheet" href="../../../_static/normalize.css" type="text/css">
+            <link rel="stylesheet" href="../../../_static/sphinx.css" type="text/css">
+            <link rel="stylesheet" href="../../../_static/main.css" type="text/css">
+            <link rel="stylesheet" href="../../../_static/flat.css" type="text/css">
+            <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+            <link rel="stylesheet" href="../../../_static/font-awesome.min.css" type="text/css">
+        <link rel="shortcut icon" href="../../../_static/tinkerer.ico" /><!-- Load modernizr and JQuery -->
+        <script src="../../../_static/vendor/modernizr-2.6.2.min.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="../../../_static/vendor/jquery-1.8.2.min.js"><\/script>')</script>
+        <script src="../../../_static/plugins.js"></script>
+        <script src="../../../_static/main.js"></script>
+        <link rel="search" title="Search" href="../../../search.html" /><link rel="next" title="Design Pattern : Chain of responsibility [Python]" href="../12/chain_of_responsibility.html" /><link rel="alternate" type="application/rss+xml" title="RSS" href="../../../rss.html" /><script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.6.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script><script type="text/javascript" src="../../../_static/underscore.js"></script><script type="text/javascript" src="../../../_static/doctools.js"></script><script type="text/javascript" src="../../../_static/disqus.js"></script><script type="text/javascript" src="../../../_static/google_analytics.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            // Scroll to content if on small screen
+            if (screen.width < 480)
+            {
+                $(document).scrollTop(document.getElementsByTagName("article")[0].offsetTop - 44);
+            }
+        });
+    </script></head>
+    <body role="document">
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+        <![endif]-->
+
+      <div id="container"><header role="banner">
+            <hgroup>
+              <h1><a href="../../../index.html">Pythonista</a></h1><h2>Blogging for Pythonistas</h2></hgroup>
+          </header>
+      <nav role="navigation">
+            <ul><li class="main-nav">
+                  <a href="../../../index.html">Home</a>
+                </li>
+              <li class="main-nav">
+                  <a href="../../../pages/about.html">Videos</a>
+                </li>
+              </ul>
+          </nav><div class="main-container" role="main"><div class="main wrapper body clearfix"><article><div class="timestamp postmeta">
+            <span>June 13, 2018</span>
+        </div>
+    <div class="section" id="understanding-tftp-proto-and-write-tftp-client-in-python">
+<h1>Understanding TFTP proto and write TFTP client in Python</h1>
+<img alt="../../../_images/tftp-proto.jpg" src="../../../_images/tftp-proto.jpg" />
+<p>Hello Pythonistas, TFTP [ Trivial File Transfer Protocol ] is a light weight file transfer protocol,
+there is really not much to it as seen in the above picture. Its a UDP [ User datagram protocol ] protocol.
+There are connection oriented and connectionless protocols and TFTP falls under the later category.</p>
+<p>Without getting into too much of technical details , lets see how the protocol plays in action.
+On my mac i have set up TFTP server and there is builtin tftp client</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>env  OSX  …/CLIENT  tftp
+tftp&gt; ?
+Commands may be abbreviated.  Commands are:
+
+connect         connect to remote tftp
+mode            <span class="nb">set</span> file transfer mode
+put             send file
+get             receive file
+quit            <span class="nb">exit</span> tftp
+verbose         toggle verbose mode
+blksize         <span class="nb">set</span> an alternative blocksize <span class="o">(</span>def. <span class="m">512</span><span class="o">)</span>
+tsize           toggle extended tsize option
+trace           toggle packet tracing
+status          show current status
+binary          <span class="nb">set</span> mode to octet
+ascii           <span class="nb">set</span> mode to netascii
+rexmt           <span class="nb">set</span> per-packet retransmission timeout
+timeout         <span class="nb">set</span> total retransmission timeout
+tout            toggle extended timeout option
+?               print <span class="nb">help</span> information
+tftp&gt; connect localhost
+tftp&gt; trace
+Packet tracing on.
+tftp&gt; status
+Connected to localhost.
+Mode: netascii Verbose: off Tracing: on
+Rexmt-interval: <span class="m">5</span> seconds, Max-timeout: <span class="m">25</span> seconds
+
+
+tftp&gt; get test.txt test.txt
+sent RRQ &lt;<span class="nv">file</span><span class="o">=</span>test.txt, <span class="nv">mode</span><span class="o">=</span>netascii&gt;
+received DATA &lt;<span class="nv">block</span><span class="o">=</span><span class="m">1</span>, <span class="m">512</span> bytes&gt;
+sent ACK &lt;<span class="nv">block</span><span class="o">=</span><span class="m">1</span>&gt;
+received DATA &lt;<span class="nv">block</span><span class="o">=</span><span class="m">2</span>, <span class="m">64</span> bytes&gt;
+Received <span class="m">576</span> bytes in <span class="m">0</span>.0 seconds
+</pre></div>
+</div>
+</div>
+<div class="section" id="protocol-in-action-summary">
+<h1>Protocol in action summary:</h1>
+<p>As shown above the protocol can be seen in action on the last 6 lines or so.</p>
+<ol class="arabic simple">
+<li>Client sends a Read Request specifying a file and mode. [ We can see opcodes for that in RFC ]</li>
+<li>Server responds with block of data along with block number.</li>
+<li>Client sends an ACK for the received block</li>
+<li>Server sends next data with incremented block number and ……</li>
+</ol>
+<dl class="docutils">
+<dt><strong>Normal Termination</strong> - This excerpt is taken directly from <a class="reference external" href="https://tools.ietf.org/html/rfc1350/">RFC 1350</a></dt>
+<dd><p class="first">The end of a transfer is marked by a DATA packet that contains
+between 0 and 511 bytes of data (i.e., Datagram length &lt; 516).  This
+packet is acknowledged by an ACK packet like all other DATA packets.
+The host acknowledging the final DATA packet may terminate its side
+of the connection on sending the final ACK.</p>
+<blockquote class="last">
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="26%" />
+<col width="74%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Opcode</th>
+<th class="head">Operation</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>1</td>
+<td>Read request (RRQ)</td>
+</tr>
+<tr class="row-odd"><td>2</td>
+<td>Write request (WRQ)</td>
+</tr>
+<tr class="row-even"><td>3</td>
+<td>Data (DATA)</td>
+</tr>
+<tr class="row-odd"><td>4</td>
+<td>Acknowledgment (ACK)</td>
+</tr>
+<tr class="row-even"><td>5</td>
+<td>Error (ERROR)</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</dd>
+</dl>
+</div>
+<div class="section" id="how-to-start-tftp-server-on-mac">
+<h1>How to start TFTP server on Mac ?</h1>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>sudo launchctl load -F /System/Library/LaunchDaemons/tftp.plist
+sudo launchctl start com.apple.tftpd
+</pre></div>
+</div>
+<p><strong>The directory that serves files is /private/tftpboot.</strong></p>
+<p>To stop the TFTP server, either reboot or use this command:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>sudo launchctl unload -F /System/Library/LaunchDaemons/tftp.plist
+</pre></div>
+</div>
+<p>Now lets look at the command line interface of the application that we wish to create</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>tftp-client  OSX  …/tftp-client   python tftp-client.py -h
+tftp-client.
+Usage:
+  tftp-client.py get &lt;filename&gt; <span class="o">[[</span>-s <span class="p">|</span> -b <span class="o">]</span> --mode<span class="o">=</span>&lt;mode&gt;<span class="o">]</span>
+  tftp-client.py <span class="o">(</span>-h <span class="p">|</span> --help<span class="o">)</span>
+
+Options:
+  -h --help     Show this screen.
+  -s            Use python struct to build request.
+  -b            Use python bytearray to build request.
+  --mode<span class="o">=</span>&lt;mode&gt; TFTP transfer mode : <span class="s2">&quot;netascii&quot;</span>, <span class="s2">&quot;octet&quot;</span>, or <span class="s2">&quot;mail&quot;</span>
+</pre></div>
+</div>
+<p>Once we know the interface, lets see how we can code it.</p>
+</div>
+<div class="section" id="algorithm">
+<h1>Algorithm:</h1>
+<ol class="arabic simple">
+<li>Get the server and port information</li>
+<li>Get the mode information [ Set default to netascii ]</li>
+<li>Send the Read Request</li>
+<li>Go in a while loop and read the data that server sends</li>
+<li>If server sends error -&gt; Quit</li>
+<li>If server sends proper data packet , send ack for each packet.</li>
+<li>If the length of the received data is less than 516 -&gt; This is the last packet; so Quit.</li>
+</ol>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;tftp-client.</span>
+<span class="sd">Usage:</span>
+<span class="sd">  tftp-client.py get &lt;filename&gt; [[-s | -b ] --mode=&lt;mode&gt;]</span>
+<span class="sd">  tftp-client.py (-h | --help)</span>
+
+<span class="sd">Options:</span>
+<span class="sd">  -h --help     Show this screen.</span>
+<span class="sd">  -s            Use python struct to build request.</span>
+<span class="sd">  -b            Use python bytearray to build request.</span>
+<span class="sd">  --mode=&lt;mode&gt; TFTP transfer mode : &quot;netascii&quot;, &quot;octet&quot;, or &quot;mail&quot;</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">docopt</span> <span class="kn">import</span> <span class="n">docopt</span>
+<span class="kn">import</span> <span class="nn">socket</span>
+<span class="kn">from</span> <span class="nn">struct</span> <span class="kn">import</span> <span class="n">pack</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    opcode  operation</span>
+<span class="sd">     1     Read request (RRQ)</span>
+<span class="sd">     2     Write request (WRQ)</span>
+<span class="sd">     3     Data (DATA)</span>
+<span class="sd">     4     Acknowledgment (ACK)</span>
+<span class="sd">     5     Error (ERROR)</span>
+
+<span class="sd">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span>
+
+<span class="sd">      2 bytes     string    1 byte     string   1 byte</span>
+<span class="sd">     ------------------------------------------------</span>
+<span class="sd">    | Opcode |  Filename  |   0  |    Mode    |   0  |</span>
+<span class="sd">     ------------------------------------------------</span>
+
+<span class="sd">    Figure 5-1: RRQ/WRQ packet</span>
+
+<span class="sd">   The [[ Mode ]] field contains the</span>
+
+<span class="sd">   string &quot;netascii&quot;, &quot;octet&quot;, or &quot;mail&quot; (or any combination of upper</span>
+<span class="sd">   and lower case, such as &quot;NETASCII&quot;, NetAscii&quot;, etc.)</span>
+
+
+<span class="sd">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span>
+
+<span class="sd">      2 bytes     2 bytes</span>
+<span class="sd">     ---------------------</span>
+<span class="sd">    | Opcode |   Block #  |</span>
+<span class="sd">     ---------------------</span>
+
+<span class="sd">     Figure 5-3: ACK packet</span>
+
+<span class="sd">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span>
+
+<span class="sd">      2 bytes     2 bytes      n bytes</span>
+<span class="sd">     ----------------------------------</span>
+<span class="sd">    | Opcode |   Block #  |   Data     |</span>
+<span class="sd">     ----------------------------------</span>
+
+<span class="sd">     Figure 5-2: DATA packet</span>
+<span class="sd">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span>
+
+<span class="sd">TFTP Formats</span>
+
+<span class="sd">   Type   Op #     Format without header</span>
+
+<span class="sd">          2 bytes    string   1 byte     string   1 byte</span>
+<span class="sd">          -----------------------------------------------</span>
+<span class="sd">   RRQ/  | 01/02 |  Filename  |   0  |    Mode    |   0  |</span>
+<span class="sd">   WRQ    -----------------------------------------------</span>
+
+
+<span class="sd">          2 bytes    2 bytes       n bytes</span>
+<span class="sd">          ---------------------------------</span>
+<span class="sd">   DATA  | 03    |   Block #  |    Data    |</span>
+<span class="sd">          ---------------------------------</span>
+
+
+<span class="sd">          2 bytes    2 bytes</span>
+<span class="sd">          -------------------</span>
+<span class="sd">   ACK   | 04    |   Block #  |</span>
+<span class="sd">          --------------------</span>
+
+
+<span class="sd">          2 bytes  2 bytes        string    1 byte</span>
+<span class="sd">          ----------------------------------------</span>
+<span class="sd">   ERROR | 05    |  ErrorCode |   ErrMsg   |   0  |</span>
+<span class="sd">          ----------------------------------------</span>
+
+<span class="sd">Error Codes</span>
+
+<span class="sd">   Value     Meaning</span>
+
+<span class="sd">   0         Not defined, see error message (if any).</span>
+<span class="sd">   1         File not found.</span>
+<span class="sd">   2         Access violation.</span>
+<span class="sd">   3         Disk full or allocation exceeded.</span>
+<span class="sd">   4         Illegal TFTP operation.</span>
+<span class="sd">   5         Unknown transfer ID.</span>
+<span class="sd">   6         File already exists.</span>
+<span class="sd">   7         No such user.</span>
+
+<span class="sd">====================</span>
+<span class="sd">Protocol in action</span>
+<span class="sd">====================</span>
+
+<span class="sd">As shown above the protocol can be seen in action on the last 6 lines or so.</span>
+
+<span class="sd">1. Client sends a Read Request specifying a file and mode. [ We can see opcodes for that in RFC ]</span>
+<span class="sd">2. Server responds with block of data along with block number.</span>
+<span class="sd">3. Client sends an ACK for the received block</span>
+<span class="sd">4. Server sends next data with incremented block number and ......</span>
+
+<span class="sd">** Normal Termination ** - This excerpt is taken directly from `RFC 1350 &lt;https://tools.ietf.org/html/rfc1350/&gt;`_</span>
+<span class="sd">  The end of a transfer is marked by a DATA packet that contains</span>
+<span class="sd">  between 0 and 511 bytes of data (i.e., Datagram length &lt; 516).  This</span>
+<span class="sd">  packet is acknowledged by an ACK packet like all other DATA packets.</span>
+<span class="sd">  The host acknowledging the final DATA packet may terminate its side</span>
+<span class="sd">  of the connection on sending the final ACK.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="n">TERMINATING_DATA_LENGTH</span> <span class="o">=</span> <span class="mi">516</span>
+<span class="n">TFTP_TRANSFER_MODE</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;netascii&#39;</span>
+
+<span class="n">TFTP_OPCODES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;unknown&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;read&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>  <span class="c1"># RRQ</span>
+    <span class="s1">&#39;write&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>  <span class="c1"># WRQ</span>
+    <span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>  <span class="c1"># DATA</span>
+    <span class="s1">&#39;ack&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>  <span class="c1"># ACKNOWLEDGMENT</span>
+    <span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">}</span>  <span class="c1"># ERROR</span>
+
+<span class="n">TFTP_MODES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;unknown&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;netascii&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s1">&#39;octet&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="s1">&#39;mail&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">}</span>
+
+<span class="c1"># Create a UDP socket</span>
+<span class="n">sock</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_DGRAM</span><span class="p">)</span>
+<span class="n">server_address</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;localhost&#39;</span><span class="p">,</span> <span class="mi">69</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">send_rq</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">mode</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function constructs the request packet in the format below.</span>
+<span class="sd">    Demonstrates how we can construct a packet using bytearray.</span>
+
+<span class="sd">        Type   Op #     Format without header</span>
+
+<span class="sd">               2 bytes    string   1 byte     string   1 byte</span>
+<span class="sd">               -----------------------------------------------</span>
+<span class="sd">        RRQ/  | 01/02 |  Filename  |   0  |    Mode    |   0  |</span>
+<span class="sd">        WRQ    -----------------------------------------------</span>
+
+
+<span class="sd">    :param filename:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">request</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">()</span>
+    <span class="c1"># First two bytes opcode - for read request</span>
+    <span class="n">request</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">request</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="c1"># append the filename you are interested in</span>
+    <span class="n">filename</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">(</span><span class="n">filename</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span>
+    <span class="n">request</span> <span class="o">+=</span> <span class="n">filename</span>
+    <span class="c1"># append the null terminator</span>
+    <span class="n">request</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="c1"># append the mode of transfer</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">(</span><span class="nb">bytes</span><span class="p">(</span><span class="n">mode</span><span class="p">,</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">))</span>
+    <span class="n">request</span> <span class="o">+=</span> <span class="n">form</span>
+    <span class="c1"># append the last byte</span>
+    <span class="n">request</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Request {request}&quot;</span><span class="p">)</span>
+    <span class="n">sent</span> <span class="o">=</span> <span class="n">sock</span><span class="o">.</span><span class="n">sendto</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">server_address</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">send_rq_struct</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">mode</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function constructs the request packet in the format below</span>
+<span class="sd">    Demonstrates how we can construct a packet using struct.</span>
+
+<span class="sd">        Type   Op #     Format without header</span>
+<span class="sd">               2 bytes    string   1 byte     string   1 byte</span>
+<span class="sd">               -----------------------------------------------</span>
+<span class="sd">        RRQ/  | 01/02 |  Filename  |   0  |    Mode    |   0  |</span>
+<span class="sd">        WRQ    -----------------------------------------------</span>
+
+<span class="sd">        :param filename:</span>
+<span class="sd">        :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">formatter</span> <span class="o">=</span> <span class="s1">&#39;&gt;h{}sB{}sB&#39;</span>  <span class="c1"># { &gt; - Big Endian, h - short , s - char, B - 1 byte }</span>
+    <span class="n">formatter</span> <span class="o">=</span> <span class="n">formatter</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">filename</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="s1">&#39;netascii&#39;</span><span class="p">))</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">formatter</span><span class="p">)</span>  <span class="c1"># final format &#39;&gt;h8sB8sB&#39;</span>
+    <span class="n">request</span> <span class="o">=</span> <span class="n">pack</span><span class="p">(</span><span class="n">formatter</span><span class="p">,</span> <span class="n">TFTP_OPCODES</span><span class="p">[</span><span class="s1">&#39;read&#39;</span><span class="p">],</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">mode</span><span class="p">,</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Request {request}&quot;</span><span class="p">)</span>
+    <span class="n">sent</span> <span class="o">=</span> <span class="n">sock</span><span class="o">.</span><span class="n">sendto</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">server_address</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">send_ack</span><span class="p">(</span><span class="n">ack_data</span><span class="p">,</span> <span class="n">server</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function constructs the ack using the bytearray.</span>
+<span class="sd">    We dont change the block number cause when server sends data it already has</span>
+<span class="sd">    block number in it.</span>
+
+<span class="sd">              2 bytes    2 bytes</span>
+<span class="sd">             -------------------</span>
+<span class="sd">      ACK   | 04    |   Block #  |</span>
+<span class="sd">             --------------------</span>
+<span class="sd">    :param ack_data:</span>
+<span class="sd">    :param server:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ack</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">(</span><span class="n">ack_data</span><span class="p">)</span>
+    <span class="n">ack</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">ack</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">TFTP_OPCODES</span><span class="p">[</span><span class="s1">&#39;ack&#39;</span><span class="p">]</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">ack</span><span class="p">)</span>
+    <span class="n">sock</span><span class="o">.</span><span class="n">sendto</span><span class="p">(</span><span class="n">ack</span><span class="p">,</span> <span class="n">server</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">server_error</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    We are checking if the server is reporting an error</span>
+<span class="sd">                2 bytes  2 bytes        string    1 byte</span>
+<span class="sd">              ----------------------------------------</span>
+<span class="sd">       ERROR | 05    |  ErrorCode |   ErrMsg   |   0  |</span>
+<span class="sd">              ----------------------------------------</span>
+<span class="sd">    :param data:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">opcode</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
+    <span class="k">return</span> <span class="nb">int</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="n">opcode</span><span class="p">,</span> <span class="n">byteorder</span><span class="o">=</span><span class="s1">&#39;big&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="n">TFTP_OPCODES</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">]</span>
+
+
+<span class="c1"># Map server error codes to messages [ Taken from RFC-1350 ]</span>
+<span class="n">server_error_msg</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="mi">0</span><span class="p">:</span> <span class="s2">&quot;Not defined, see error message (if any).&quot;</span><span class="p">,</span>
+    <span class="mi">1</span><span class="p">:</span> <span class="s2">&quot;File not found.&quot;</span><span class="p">,</span>
+    <span class="mi">2</span><span class="p">:</span> <span class="s2">&quot;Access violation.&quot;</span><span class="p">,</span>
+    <span class="mi">3</span><span class="p">:</span> <span class="s2">&quot;Disk full or allocation exceeded.&quot;</span><span class="p">,</span>
+    <span class="mi">4</span><span class="p">:</span> <span class="s2">&quot;Illegal TFTP operation.&quot;</span><span class="p">,</span>
+    <span class="mi">5</span><span class="p">:</span> <span class="s2">&quot;Unknown transfer ID.&quot;</span><span class="p">,</span>
+    <span class="mi">6</span><span class="p">:</span> <span class="s2">&quot;File already exists.&quot;</span><span class="p">,</span>
+    <span class="mi">7</span><span class="p">:</span> <span class="s2">&quot;No such user.&quot;</span>
+<span class="p">}</span>
+
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="n">arguments</span> <span class="o">=</span> <span class="n">docopt</span><span class="p">(</span><span class="vm">__doc__</span><span class="p">)</span>
+    <span class="n">filename</span> <span class="o">=</span> <span class="n">arguments</span><span class="p">[</span><span class="s1">&#39;&lt;filename&gt;&#39;</span><span class="p">]</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">arguments</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">arguments</span><span class="p">[</span><span class="s1">&#39;--mode&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">mode</span> <span class="o">=</span> <span class="n">arguments</span><span class="p">[</span><span class="s1">&#39;--mode&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">mode</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">TFTP_MODES</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Unknown mode - defaulting to [ netascii ]&quot;</span><span class="p">)</span>
+            <span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;netascii&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;netascii&quot;</span>
+
+    <span class="c1"># Send request</span>
+    <span class="k">if</span> <span class="n">arguments</span><span class="p">[</span><span class="s1">&#39;-s&#39;</span><span class="p">]:</span>
+        <span class="n">send_rq_struct</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">arguments</span><span class="p">[</span><span class="s1">&#39;-b&#39;</span><span class="p">]:</span>
+        <span class="n">send_rq</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">send_rq_struct</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+
+    <span class="c1"># Open file locally with the same name as that of the requested file from server</span>
+    <span class="nb">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span>
+    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+        <span class="c1"># Wait for the data from the server</span>
+        <span class="n">data</span><span class="p">,</span> <span class="n">server</span> <span class="o">=</span> <span class="n">sock</span><span class="o">.</span><span class="n">recvfrom</span><span class="p">(</span><span class="mi">600</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">server_error</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+            <span class="n">error_code</span> <span class="o">=</span> <span class="nb">int</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">4</span><span class="p">],</span> <span class="n">byteorder</span><span class="o">=</span><span class="s1">&#39;big&#39;</span><span class="p">)</span>
+            <span class="k">print</span><span class="p">(</span><span class="n">server_error_msg</span><span class="p">[</span><span class="n">error_code</span><span class="p">])</span>
+            <span class="k">break</span>
+        <span class="n">send_ack</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">4</span><span class="p">],</span> <span class="n">server</span><span class="p">)</span>
+        <span class="n">content</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">4</span><span class="p">:]</span>
+        <span class="c1"># print(f&quot;Content : {content}&quot;)</span>
+        <span class="nb">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+        <span class="c1"># print(f&quot;## Data ##: {data[0:4]} : {len(data)}&quot;)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">TERMINATING_DATA_LENGTH</span><span class="p">:</span>
+            <span class="k">break</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Lets look at how the sample run of the program looks like.</p>
+<img alt="../../../_images/tftp-final-output.jpg" src="../../../_images/tftp-final-output.jpg" />
+</div>
+
+    <div class="postmeta">
+        <div class="author">
+            <span>Posted by Smital Desai</span>
+        </div>
+        <div class="categories">
+            <span>
+                Filed under:
+                <a href="../../../categories/programming.html">programming</a></span>
+        </div>
+        <div class="tags">
+            <span>
+                Tags:
+                <a href="../../../tags/network_programming.html">network-programming</a></span>
+        </div>
+        </div><ul class="related clearfix">
+            <li class="left"></li>
+            <li class="right"><a href="../12/chain_of_responsibility.html">Design Pattern : Chain of responsibility [Python]</a> &raquo; </li>
+        </ul></article><aside class="sidebar"><section><div class="widget">
+    <h1>Recent Posts</h1>
+    <ul><li>
+            <a href="#">Understanding TFTP proto and write TFTP client in Python</a>
+        </li><li>
+            <a href="../12/chain_of_responsibility.html">Design Pattern : Chain of responsibility [Python]</a>
+        </li><li>
+            <a href="../11/decorator.html">Understanding decorator pattern with Python</a>
+        </li><li>
+            <a href="../10/hello_world.html">iter function with sentinnel</a>
+        </li></ul>
+</div>
+</section><section><div class="widget" id="searchbox" role="search">
+    <h1><a href="#searchbox">Search</a></h1>
+    <form action="../../../search.html" method="get">
+        <input type="text" name="q" />
+        <button type="submit"><span class="fa fa-search"></span></button>
+    </form>
+</div></section></aside></div> <!-- #main --></div> <!-- #main-container -->
+
+        <div class="footer-container" role="contentinfo"><footer class="wrapper">&copy; Copyright 2018, Smital Desai. Powered by <a href="http://www.tinkerer.me/">Tinkerer</a> and <a href="http://sphinx.pocoo.org/">Sphinx</a>.</footer></div> <!-- footer-container -->
+
+      </div> <!--! end of #container --><script type="text/javascript">    var disqus_shortname = "Smital";    disqus_count();</script><!--[if lt IE 7 ]>
+          <script src="//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.3/CFInstall.min.js"></script>
+          <script>window.attachEvent('onload',function(){CFInstall.check({mode:'overlay'})})</script>
+        <![endif]-->
+    </body>
+</html>
