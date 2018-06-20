@@ -1,0 +1,244 @@
+<!DOCTYPE html><!--[if lt IE 7]>      <html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:og="http://ogp.me/ns#"
+    xmlns:fb="https://www.facebook.com/2008/fbml" class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:og="http://ogp.me/ns#"
+    xmlns:fb="https://www.facebook.com/2008/fbml" class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:og="http://ogp.me/ns#"
+    xmlns:fb="https://www.facebook.com/2008/fbml" class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:og="http://ogp.me/ns#"
+    xmlns:fb="https://www.facebook.com/2008/fbml" class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="description" content="Useful python resources and helpful explanations on quirks of the language">
+        <meta name="viewport" content="width=device-width">
+        <title>Python’s random module : Real-valued distributions &mdash; Pythonista</title>
+            <link rel="stylesheet" href="../../../_static/normalize.css" type="text/css">
+            <link rel="stylesheet" href="../../../_static/sphinx.css" type="text/css">
+            <link rel="stylesheet" href="../../../_static/main.css" type="text/css">
+            <link rel="stylesheet" href="../../../_static/flat.css" type="text/css">
+            <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+            <link rel="stylesheet" href="../../../_static/font-awesome.min.css" type="text/css">
+        <link rel="shortcut icon" href="../../../_static/tinkerer.ico" /><!-- Load modernizr and JQuery -->
+        <script src="../../../_static/vendor/modernizr-2.6.2.min.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="../../../_static/vendor/jquery-1.8.2.min.js"><\/script>')</script>
+        <script src="../../../_static/plugins.js"></script>
+        <script src="../../../_static/main.js"></script>
+        <link rel="search" title="Search" href="../../../search.html" /><link rel="next" title="Understanding TFTP protocol and write TFTP client in Python" href="../13/tftp.html" /><link rel="alternate" type="application/rss+xml" title="RSS" href="../../../rss.html" /><script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.6.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script><script type="text/javascript" src="../../../_static/underscore.js"></script><script type="text/javascript" src="../../../_static/doctools.js"></script><script type="text/javascript" src="../../../_static/disqus.js"></script><script type="text/javascript" src="../../../_static/google_analytics.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            // Scroll to content if on small screen
+            if (screen.width < 480)
+            {
+                $(document).scrollTop(document.getElementsByTagName("article")[0].offsetTop - 44);
+            }
+        });
+    </script></head>
+    <body role="document">
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+        <![endif]-->
+
+      <div id="container"><header role="banner">
+            <hgroup>
+              <h1><a href="../../../index.html">Pythonista</a></h1><h2>Blogging for Pythonistas</h2></hgroup>
+          </header>
+      <nav role="navigation">
+            <ul><li class="main-nav">
+                  <a href="../../../index.html">Home</a>
+                </li>
+              <li class="main-nav">
+                  <a href="../../../pages/about.html">Videos</a>
+                </li>
+              </ul>
+          </nav><div class="main-container" role="main"><div class="main wrapper body clearfix"><article><div class="timestamp postmeta">
+            <span>June 20, 2018</span>
+        </div>
+    <div class="section" id="python-s-random-module-real-valued-distributions">
+<h1>Python’s random module :  Real-valued distributions</h1>
+<img alt="../../../_images/random_numbers.jpg" src="../../../_images/random_numbers.jpg" />
+<p>Hello Pythonistas , In my opinion the better to understand distributions is to visualize them.</p>
+<div class="section" id="uniform-distrubution">
+<h2>Uniform Distrubution</h2>
+<p>Lets say , you would like to create random numbers between <strong>2000 and 3000</strong> such that the generated
+values are uniformly distributed over the range. Here we are creating 1000 values over the range.
+Histogram is really useful tool to bucketize a given set of values into given buckets.</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">mport</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="n">rom</span> <span class="n">random</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="n">opulation_data</span> <span class="o">=</span> <span class="p">[</span><span class="n">uniform</span><span class="p">(</span><span class="mi">2000</span><span class="p">,</span> <span class="mi">3000</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1000</span><span class="p">)]</span>
+
+<span class="n">lt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">population_data</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">histtype</span><span class="o">=</span><span class="s2">&quot;bar&quot;</span><span class="p">,</span> <span class="n">rwidth</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
+<span class="n">lt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Uniform distribution&quot;</span><span class="p">)</span>
+<span class="n">lt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="../../../_images/uniform.png" src="../../../_images/uniform.png" />
+</div>
+<div class="section" id="triangular-distribution">
+<h2>Triangular Distribution</h2>
+<p>Lets say , you would like to create random numbers between <strong>2000 and 3000</strong> such that the generated
+values are triangularly distributed over the range. What i mean by Triangulary distributed is;
+mid point between 2000 and 3000 is 2500. so more values will generated around this midpoint rather than
+towards both the ends of range like less values towards 2000 and less values towards 3000.</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">random</span> <span class="k">import</span> <span class="o">*</span>
+
+<span class="n">population_data</span> <span class="o">=</span> <span class="p">[</span><span class="n">triangular</span><span class="p">(</span><span class="mi">2000</span><span class="p">,</span> <span class="mi">3000</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1000</span><span class="p">)]</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">population_data</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">histtype</span><span class="o">=</span><span class="s2">&quot;bar&quot;</span><span class="p">,</span> <span class="n">rwidth</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Triangular distribution&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="../../../_images/gauss.png" src="../../../_images/gauss.png" />
+</div>
+<div class="section" id="gaussian-distribution">
+<h2>Gaussian Distribution</h2>
+<p>Sometimes when you wish to tightly control the values generated around midpoint.
+In gaussian distribution you specify the mean and the max variation thats allowed from mean. [ Standard Deviation ]</p>
+<p>In this example we generate values such that the mean is 2500 and allowed variation from mean is 15.
+If you carefully look at the output and compare it to Triangular distribution , you will see that density of values around
+mean is way higher than its seen with Triangular distribution.</p>
+<p>In fact all the values are between 2460 to 2540</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">random</span> <span class="k">import</span> <span class="o">*</span>
+
+<span class="n">population_data</span> <span class="o">=</span> <span class="p">[</span><span class="n">gauss</span><span class="p">(</span><span class="mi">2500</span><span class="p">,</span> <span class="mi">15</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1000</span><span class="p">)]</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">population_data</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">histtype</span><span class="o">=</span><span class="s2">&quot;bar&quot;</span><span class="p">,</span> <span class="n">rwidth</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Gaussian distribution&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="../../../_images/traingle.png" src="../../../_images/traingle.png" />
+</div>
+<div class="section" id="expovariate-distribution">
+<h2>Expovariate Distribution</h2>
+<p>This is also another useful distribution where you would like to simulate</p>
+<ol class="arabic simple">
+<li>arrival times of customer</li>
+<li>arrival of network packets</li>
+</ol>
+<p>for example when you go to bank , you can see that customers arrive randomly.
+sometimes they come in a bunch, but every once a in while there is no one.</p>
+<p>Same thing hanppens with network packets , they come in a bunch and sometimes there is
+no network traffic.</p>
+<p>average_arrival_interval = 5.6</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">random</span> <span class="k">import</span> <span class="o">*</span>
+
+<span class="n">population_data</span> <span class="o">=</span> <span class="p">[</span><span class="n">expovariate</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mf">5.6</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1000</span><span class="p">)]</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">population_data</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">histtype</span><span class="o">=</span><span class="s2">&quot;bar&quot;</span><span class="p">,</span> <span class="n">rwidth</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Expovariate distribution&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="../../../_images/expo.png" src="../../../_images/expo.png" />
+<p>Now if you are thinking where you would use these distributions, Random module has a great section on example and Recipe’s
+<a class="reference external" href="https://docs.python.org/3/library/random.html#examples-and-recipes">Example</a></p>
+</div>
+<div class="section" id="simulation-of-arrival-times-and-service-deliveries-in-a-single-server-queue">
+<h2>Simulation of arrival times and service deliveries in a single server queue:</h2>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">random</span> <span class="k">import</span> <span class="n">expovariate</span><span class="p">,</span> <span class="n">gauss</span>
+<span class="kn">from</span> <span class="nn">statistics</span> <span class="k">import</span> <span class="n">mean</span><span class="p">,</span> <span class="n">median</span><span class="p">,</span> <span class="n">stdev</span>
+
+<span class="n">average_arrival_interval</span> <span class="o">=</span> <span class="mf">5.6</span>
+<span class="n">average_service_time</span> <span class="o">=</span> <span class="mf">5.0</span>
+<span class="n">stdev_service_time</span> <span class="o">=</span> <span class="mf">0.5</span>
+
+<span class="n">num_waiting</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">arrivals</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">starts</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">arrival</span> <span class="o">=</span> <span class="n">service_end</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">20000</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">arrival</span> <span class="o">&lt;=</span> <span class="n">service_end</span><span class="p">:</span>
+        <span class="n">num_waiting</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="c1"># see how expovariate is used to simulate arrival times</span>
+        <span class="n">arrival</span> <span class="o">+=</span> <span class="n">expovariate</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="n">average_arrival_interval</span><span class="p">)</span>
+        <span class="n">arrivals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">arrival</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">num_waiting</span> <span class="o">-=</span> <span class="mi">1</span>
+        <span class="n">service_start</span> <span class="o">=</span> <span class="n">service_end</span> <span class="k">if</span> <span class="n">num_waiting</span> <span class="k">else</span> <span class="n">arrival</span>
+        <span class="c1"># see how gaussian is used to get the average service time by allowing margin</span>
+        <span class="c1"># for variability in servicing requests.</span>
+        <span class="n">service_time</span> <span class="o">=</span> <span class="n">gauss</span><span class="p">(</span><span class="n">average_service_time</span><span class="p">,</span> <span class="n">stdev_service_time</span><span class="p">)</span>
+        <span class="n">service_end</span> <span class="o">=</span> <span class="n">service_start</span> <span class="o">+</span> <span class="n">service_time</span>
+        <span class="n">starts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">service_start</span><span class="p">)</span>
+
+<span class="n">waits</span> <span class="o">=</span> <span class="p">[</span><span class="n">start</span> <span class="o">-</span> <span class="n">arrival</span> <span class="k">for</span> <span class="n">arrival</span><span class="p">,</span> <span class="n">start</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">arrivals</span><span class="p">,</span> <span class="n">starts</span><span class="p">)]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Mean wait: {mean(waits):.1f}.  Stdev wait: {stdev(waits):.1f}.&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Median wait: {median(waits):.1f}.  Max wait: {max(waits):.1f}.&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="bonus-dont-miss-the-see-also-section">
+<h2>Bonus - Dont miss the See Also section</h2>
+<p>See also <a class="reference external" href="https://www.youtube.com/watch?v=Iq9DzN6mvYA">Statistics for Hackers</a> a video tutorial by <a class="reference external" href="https://us.pycon.org/2016/speaker/profile/295/">Jake Vanderplas</a> on statistical analysis using just a few fundamental concepts including simulation, sampling, shuffling, and cross-validation.</p>
+<p><a class="reference external" href="http://nbviewer.jupyter.org/url/norvig.com/ipython/Economics.ipynb">Economics Simulation</a> a simulation of a marketplace by <a class="reference external" href="http://norvig.com/bio.html">Peter Norvig</a> that shows effective use of many of the tools and distributions provided by this module (gauss, uniform, sample, betavariate, choice, triangular, and randrange).</p>
+<p><a class="reference external" href="http://nbviewer.jupyter.org/url/norvig.com/ipython/Probability.ipynb">A Concrete Introduction to Probability</a> (using Python) a tutorial by <a class="reference external" href="http://norvig.com/bio.html">Peter Norvig</a> covering the basics of probability theory, how to write simulations, and how to perform data analysis using Python.</p>
+</div>
+</div>
+
+    <div class="postmeta">
+        <div class="author">
+            <span>Posted by Smital Desai</span>
+        </div>
+        <div class="categories">
+            <span>
+                Filed under:
+                <a href="../../../categories/programming.html">programming</a></span>
+        </div>
+        <div class="tags">
+            <span>
+                Tags:
+                <a href="../../../tags/statistics.html">statistics</a></span>
+        </div>
+        </div><ul class="related clearfix">
+            <li class="left"></li>
+            <li class="right"><a href="../13/tftp.html">Understanding TFTP protocol and write TFTP client in Python</a> &raquo; </li>
+        </ul></article><aside class="sidebar"><section><div class="widget">
+    <h1>Recent Posts</h1>
+    <ul><li>
+            <a href="#">Python’s random module :  Real-valued distributions</a>
+        </li><li>
+            <a href="../13/tftp.html">Understanding TFTP protocol and write TFTP client in Python</a>
+        </li><li>
+            <a href="../12/chain_of_responsibility.html">Design Pattern : Chain of responsibility [Python]</a>
+        </li><li>
+            <a href="../11/decorator.html">Understanding decorator pattern with Python</a>
+        </li><li>
+            <a href="../10/hello_world.html">iter function with sentinnel</a>
+        </li></ul>
+</div>
+</section><section><div class="widget" id="searchbox" role="search">
+    <h1><a href="#searchbox">Search</a></h1>
+    <form action="../../../search.html" method="get">
+        <input type="text" name="q" />
+        <button type="submit"><span class="fa fa-search"></span></button>
+    </form>
+</div></section></aside></div> <!-- #main --></div> <!-- #main-container -->
+
+        <div class="footer-container" role="contentinfo"><footer class="wrapper">&copy; Copyright 2018, Smital Desai. Powered by <a href="http://www.tinkerer.me/">Tinkerer</a> and <a href="http://sphinx.pocoo.org/">Sphinx</a>.</footer></div> <!-- footer-container -->
+
+      </div> <!--! end of #container --><script type="text/javascript">    var disqus_shortname = "Smital";    disqus_count();</script><!--[if lt IE 7 ]>
+          <script src="//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.3/CFInstall.min.js"></script>
+          <script>window.attachEvent('onload',function(){CFInstall.check({mode:'overlay'})})</script>
+        <![endif]-->
+    </body>
+</html>

@@ -66,6 +66,150 @@
                 </li>
               </ul>
           </nav><div class="main-container" role="main"><div class="main wrapper body clearfix"><article><div class="timestamp postmeta">
+            <span>June 20, 2018</span>
+        </div>
+        <div class="section">
+            <h1><a href="2018/06/20/random.html">Python’s random module :  Real-valued distributions</a></h1>
+<img alt="../../../_images/random_numbers.jpg" src="_images/random_numbers.jpg"/>
+<p>Hello Pythonistas , In my opinion the better to understand distributions is to visualize them.</p>
+<div class="section" id="uniform-distrubution">
+<h2>Uniform Distrubution</h2>
+<p>Lets say , you would like to create random numbers between <strong>2000 and 3000</strong> such that the generated
+values are uniformly distributed over the range. Here we are creating 1000 values over the range.
+Histogram is really useful tool to bucketize a given set of values into given buckets.</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span/><span class="n">mport</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="n">rom</span> <span class="n">random</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="n">opulation_data</span> <span class="o">=</span> <span class="p">[</span><span class="n">uniform</span><span class="p">(</span><span class="mi">2000</span><span class="p">,</span> <span class="mi">3000</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1000</span><span class="p">)]</span>
+
+<span class="n">lt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">population_data</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">histtype</span><span class="o">=</span><span class="s2">"bar"</span><span class="p">,</span> <span class="n">rwidth</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
+<span class="n">lt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">"Uniform distribution"</span><span class="p">)</span>
+<span class="n">lt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="../../../_images/uniform.png" src="_images/uniform.png"/>
+</div>
+<div class="section" id="triangular-distribution">
+<h2>Triangular Distribution</h2>
+<p>Lets say , you would like to create random numbers between <strong>2000 and 3000</strong> such that the generated
+values are triangularly distributed over the range. What i mean by Triangulary distributed is;
+mid point between 2000 and 3000 is 2500. so more values will generated around this midpoint rather than
+towards both the ends of range like less values towards 2000 and less values towards 3000.</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span/><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">random</span> <span class="k">import</span> <span class="o">*</span>
+
+<span class="n">population_data</span> <span class="o">=</span> <span class="p">[</span><span class="n">triangular</span><span class="p">(</span><span class="mi">2000</span><span class="p">,</span> <span class="mi">3000</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1000</span><span class="p">)]</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">population_data</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">histtype</span><span class="o">=</span><span class="s2">"bar"</span><span class="p">,</span> <span class="n">rwidth</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">"Triangular distribution"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="../../../_images/gauss.png" src="_images/gauss.png"/>
+</div>
+<div class="section" id="gaussian-distribution">
+<h2>Gaussian Distribution</h2>
+<p>Sometimes when you wish to tightly control the values generated around midpoint.
+In gaussian distribution you specify the mean and the max variation thats allowed from mean. [ Standard Deviation ]</p>
+<p>In this example we generate values such that the mean is 2500 and allowed variation from mean is 15.
+If you carefully look at the output and compare it to Triangular distribution , you will see that density of values around
+mean is way higher than its seen with Triangular distribution.</p>
+<p>In fact all the values are between 2460 to 2540</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span/><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">random</span> <span class="k">import</span> <span class="o">*</span>
+
+<span class="n">population_data</span> <span class="o">=</span> <span class="p">[</span><span class="n">gauss</span><span class="p">(</span><span class="mi">2500</span><span class="p">,</span> <span class="mi">15</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1000</span><span class="p">)]</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">population_data</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">histtype</span><span class="o">=</span><span class="s2">"bar"</span><span class="p">,</span> <span class="n">rwidth</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">"Gaussian distribution"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="../../../_images/traingle.png" src="_images/traingle.png"/>
+</div>
+<div class="section" id="expovariate-distribution">
+<h2>Expovariate Distribution</h2>
+<p>This is also another useful distribution where you would like to simulate</p>
+<ol class="arabic simple">
+<li>arrival times of customer</li>
+<li>arrival of network packets</li>
+</ol>
+<p>for example when you go to bank , you can see that customers arrive randomly.
+sometimes they come in a bunch, but every once a in while there is no one.</p>
+<p>Same thing hanppens with network packets , they come in a bunch and sometimes there is
+no network traffic.</p>
+<p>average_arrival_interval = 5.6</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span/><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">random</span> <span class="k">import</span> <span class="o">*</span>
+
+<span class="n">population_data</span> <span class="o">=</span> <span class="p">[</span><span class="n">expovariate</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mf">5.6</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1000</span><span class="p">)]</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">population_data</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">histtype</span><span class="o">=</span><span class="s2">"bar"</span><span class="p">,</span> <span class="n">rwidth</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">"Expovariate distribution"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="../../../_images/expo.png" src="_images/expo.png"/>
+<p>Now if you are thinking where you would use these distributions, Random module has a great section on example and Recipe’s
+<a class="reference external" href="https://docs.python.org/3/library/random.html#examples-and-recipes">Example</a></p>
+</div>
+<div class="section" id="simulation-of-arrival-times-and-service-deliveries-in-a-single-server-queue">
+<h2>Simulation of arrival times and service deliveries in a single server queue:</h2>
+<div class="code python highlight-default"><div class="highlight"><pre><span/><span class="kn">from</span> <span class="nn">random</span> <span class="k">import</span> <span class="n">expovariate</span><span class="p">,</span> <span class="n">gauss</span>
+<span class="kn">from</span> <span class="nn">statistics</span> <span class="k">import</span> <span class="n">mean</span><span class="p">,</span> <span class="n">median</span><span class="p">,</span> <span class="n">stdev</span>
+
+<span class="n">average_arrival_interval</span> <span class="o">=</span> <span class="mf">5.6</span>
+<span class="n">average_service_time</span> <span class="o">=</span> <span class="mf">5.0</span>
+<span class="n">stdev_service_time</span> <span class="o">=</span> <span class="mf">0.5</span>
+
+<span class="n">num_waiting</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">arrivals</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">starts</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">arrival</span> <span class="o">=</span> <span class="n">service_end</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">20000</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">arrival</span> <span class="o">&lt;=</span> <span class="n">service_end</span><span class="p">:</span>
+        <span class="n">num_waiting</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="c1"># see how expovariate is used to simulate arrival times</span>
+        <span class="n">arrival</span> <span class="o">+=</span> <span class="n">expovariate</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="n">average_arrival_interval</span><span class="p">)</span>
+        <span class="n">arrivals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">arrival</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">num_waiting</span> <span class="o">-=</span> <span class="mi">1</span>
+        <span class="n">service_start</span> <span class="o">=</span> <span class="n">service_end</span> <span class="k">if</span> <span class="n">num_waiting</span> <span class="k">else</span> <span class="n">arrival</span>
+        <span class="c1"># see how gaussian is used to get the average service time by allowing margin</span>
+        <span class="c1"># for variability in servicing requests.</span>
+        <span class="n">service_time</span> <span class="o">=</span> <span class="n">gauss</span><span class="p">(</span><span class="n">average_service_time</span><span class="p">,</span> <span class="n">stdev_service_time</span><span class="p">)</span>
+        <span class="n">service_end</span> <span class="o">=</span> <span class="n">service_start</span> <span class="o">+</span> <span class="n">service_time</span>
+        <span class="n">starts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">service_start</span><span class="p">)</span>
+
+<span class="n">waits</span> <span class="o">=</span> <span class="p">[</span><span class="n">start</span> <span class="o">-</span> <span class="n">arrival</span> <span class="k">for</span> <span class="n">arrival</span><span class="p">,</span> <span class="n">start</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">arrivals</span><span class="p">,</span> <span class="n">starts</span><span class="p">)]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">'Mean wait: {mean(waits):.1f}.  Stdev wait: {stdev(waits):.1f}.'</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">'Median wait: {median(waits):.1f}.  Max wait: {max(waits):.1f}.'</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="bonus-dont-miss-the-see-also-section">
+<h2>Bonus - Dont miss the See Also section</h2>
+<p>See also <a class="reference external" href="https://www.youtube.com/watch?v=Iq9DzN6mvYA">Statistics for Hackers</a> a video tutorial by <a class="reference external" href="https://us.pycon.org/2016/speaker/profile/295/">Jake Vanderplas</a> on statistical analysis using just a few fundamental concepts including simulation, sampling, shuffling, and cross-validation.</p>
+<p><a class="reference external" href="http://nbviewer.jupyter.org/url/norvig.com/ipython/Economics.ipynb">Economics Simulation</a> a simulation of a marketplace by <a class="reference external" href="http://norvig.com/bio.html">Peter Norvig</a> that shows effective use of many of the tools and distributions provided by this module (gauss, uniform, sample, betavariate, choice, triangular, and randrange).</p>
+<p><a class="reference external" href="http://nbviewer.jupyter.org/url/norvig.com/ipython/Probability.ipynb">A Concrete Introduction to Probability</a> (using Python) a tutorial by <a class="reference external" href="http://norvig.com/bio.html">Peter Norvig</a> covering the basics of probability theory, how to write simulations, and how to perform data analysis using Python.</p>
+</div>
+
+        </div>
+        <div class="postmeta">
+        <div class="author">
+            <span>Posted by Smital Desai</span>
+        </div>
+        <div class="categories">
+            <span>
+                Filed under:
+                <a href="categories/programming.html">programming</a></span>
+        </div>
+        <div class="tags">
+            <span>
+                Tags:
+                <a href="tags/statistics.html">statistics</a></span>
+        </div>
+        </div><div class="separator post_separator"></div><div class="timestamp postmeta">
             <span>June 13, 2018</span>
         </div>
         <div class="section">
@@ -940,6 +1084,8 @@ So effectively we wish to read only first two lines in this files.</p>
     </div></article><aside class="sidebar"><section><div class="widget">
     <h1>Recent Posts</h1>
     <ul><li>
+            <a href="2018/06/20/random.html">Python’s random module :  Real-valued distributions</a>
+        </li><li>
             <a href="2018/06/13/tftp.html">Understanding TFTP protocol and write TFTP client in Python</a>
         </li><li>
             <a href="2018/06/12/chain_of_responsibility.html">Design Pattern : Chain of responsibility [Python]</a>
