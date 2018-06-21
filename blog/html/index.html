@@ -66,6 +66,86 @@
                 </li>
               </ul>
           </nav><div class="main-container" role="main"><div class="main wrapper body clearfix"><article><div class="timestamp postmeta">
+            <span>June 21, 2018</span>
+        </div>
+        <div class="section">
+            <h1><a href="2018/06/21/math.html">Represent Mathematical formulae programmatically</a></h1>
+<img alt="../../../_images/summation.jpg" src="_images/summation.jpg"/>
+<p>Hello Pythonistas , In this blog post we are trying to see how can we represent the mathematical
+formula that uses summation notation in Python. I am not really a math lover so whenever i see
+something represented in this kind of formula , i get nervous about whether i will be able to handle it
+or not.</p>
+<div class="section" id="gini-coefficient">
+<h2>Gini Coefficient</h2>
+<img alt="../../../_images/gini.png" src="_images/gini.png"/>
+<p>This excerpt has been taken from <a class="reference external" href="http://nbviewer.jupyter.org/url/norvig.com/ipython/Economics.ipynb">Economics simulation</a>.</p>
+<p>As seen in the formula , i goes from 1 to n which can be done using for loop  ** for i in range(n) **
+for numerator , we can see that for each i we are performing ** ( i * y[i] )
+and finally there is sum() function which is replacing the sigma.</p>
+<p>for the denominator we are not doing any alteration on each iteration we can simply invoke sum() on y</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span/><span class="k">def</span> <span class="nf">gini</span><span class="p">(</span><span class="n">y</span><span class="p">):</span>
+   <span class="s2">"Compute the Gini coefficient (a measure of equality/inequality) in a population, y."</span>
+   <span class="n">y</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+   <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+   <span class="n">numer</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="nb">sum</span><span class="p">((</span><span class="n">i</span><span class="p">)</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
+   <span class="n">denom</span> <span class="o">=</span> <span class="n">n</span> <span class="o">*</span> <span class="nb">sum</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+   <span class="k">return</span> <span class="p">(</span><span class="n">numer</span> <span class="o">/</span> <span class="n">denom</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">n</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="chained-comparisons">
+<h2>Chained comparisons</h2>
+<div class="code python highlight-default"><div class="highlight"><pre><span/><span class="n">In</span> <span class="p">[</span><span class="mi">2</span><span class="p">]:</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">10</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">3</span><span class="p">]:</span> <span class="n">y</span> <span class="o">=</span> <span class="mi">20</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">4</span><span class="p">]:</span> <span class="mi">15</span> <span class="o">&gt;</span> <span class="n">x</span> <span class="ow">and</span> <span class="mi">15</span> <span class="o">&lt;</span> <span class="n">y</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">4</span><span class="p">]:</span> <span class="kc">True</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">5</span><span class="p">]:</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="mi">15</span> <span class="o">&lt;</span> <span class="n">y</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">5</span><span class="p">]:</span> <span class="kc">True</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="simulating-roulle-spins">
+<h2>Simulating Roulle spins</h2>
+<img alt="../../../_images/am-rollete.png" src="_images/am-rollete.png"/>
+<p>How to perform Six roulette wheel spins (weighted sampling with replacement)
+There are 18 Red slots , 18 black slots and 6 green slots.
+.. code:: python</p>
+<div class="highlight-default"><div class="highlight"><pre><span/><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">random</span> <span class="k">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">choices</span><span class="p">([</span><span class="s1">'red'</span><span class="p">,</span> <span class="s1">'black'</span><span class="p">,</span> <span class="s1">'green'</span><span class="p">],</span> <span class="p">[</span><span class="mi">18</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">k</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
+<span class="go">['red', 'green', 'black', 'black', 'red', 'black']</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="biased-coins">
+<h2>Biased Coins</h2>
+<div class="code python highlight-default"><div class="highlight"><pre><span/> <span class="o">&gt;&gt;&gt;</span> <span class="c1"># Estimate the probability of getting 5 or more heads from 7 spins</span>
+ <span class="o">&gt;&gt;&gt;</span> <span class="c1"># of a biased coin that settles on heads 60% of the time.</span>
+ <span class="o">&gt;&gt;&gt;</span> <span class="n">trial</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">choices</span><span class="p">(</span><span class="s1">'HT'</span><span class="p">,</span> <span class="n">cum_weights</span><span class="o">=</span><span class="p">(</span><span class="mf">0.60</span><span class="p">,</span> <span class="mf">1.00</span><span class="p">),</span> <span class="n">k</span><span class="o">=</span><span class="mi">7</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">'H'</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">5</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">sum</span><span class="p">(</span><span class="n">trial</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10000</span><span class="p">))</span> <span class="o">/</span> <span class="mi">10000</span>
+    <span class="mf">0.4169</span>
+</pre></div>
+</div>
+</div>
+
+        </div>
+        <div class="postmeta">
+        <div class="author">
+            <span>Posted by Smital Desai</span>
+        </div>
+        <div class="categories">
+            <span>
+                Filed under:
+                <a href="categories/programming.html">programming</a></span>
+        </div>
+        <div class="tags">
+            <span>
+                Tags:
+                <a href="tags/math.html">math</a></span>
+        </div>
+        </div><div class="separator post_separator"></div><div class="timestamp postmeta">
             <span>June 20, 2018</span>
         </div>
         <div class="section">
@@ -1084,6 +1164,8 @@ So effectively we wish to read only first two lines in this files.</p>
     </div></article><aside class="sidebar"><section><div class="widget">
     <h1>Recent Posts</h1>
     <ul><li>
+            <a href="2018/06/21/math.html">Represent Mathematical formulae programmatically</a>
+        </li><li>
             <a href="2018/06/20/random.html">Python’s random module :  Real-valued distributions</a>
         </li><li>
             <a href="2018/06/13/tftp.html">Understanding TFTP protocol and write TFTP client in Python</a>

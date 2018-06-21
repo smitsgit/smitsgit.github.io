@@ -1,0 +1,182 @@
+<!DOCTYPE html><!--[if lt IE 7]>      <html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:og="http://ogp.me/ns#"
+    xmlns:fb="https://www.facebook.com/2008/fbml" class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:og="http://ogp.me/ns#"
+    xmlns:fb="https://www.facebook.com/2008/fbml" class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:og="http://ogp.me/ns#"
+    xmlns:fb="https://www.facebook.com/2008/fbml" class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:og="http://ogp.me/ns#"
+    xmlns:fb="https://www.facebook.com/2008/fbml" class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="description" content="Useful python resources and helpful explanations on quirks of the language">
+        <meta name="viewport" content="width=device-width">
+        <title>Represent Mathematical formulae programmatically &mdash; Pythonista</title>
+            <link rel="stylesheet" href="../../../_static/normalize.css" type="text/css">
+            <link rel="stylesheet" href="../../../_static/sphinx.css" type="text/css">
+            <link rel="stylesheet" href="../../../_static/main.css" type="text/css">
+            <link rel="stylesheet" href="../../../_static/flat.css" type="text/css">
+            <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+            <link rel="stylesheet" href="../../../_static/font-awesome.min.css" type="text/css">
+        <link rel="shortcut icon" href="../../../_static/tinkerer.ico" /><!-- Load modernizr and JQuery -->
+        <script src="../../../_static/vendor/modernizr-2.6.2.min.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="../../../_static/vendor/jquery-1.8.2.min.js"><\/script>')</script>
+        <script src="../../../_static/plugins.js"></script>
+        <script src="../../../_static/main.js"></script>
+        <link rel="search" title="Search" href="../../../search.html" /><link rel="next" title="Python’s random module : Real-valued distributions" href="../20/random.html" /><link rel="alternate" type="application/rss+xml" title="RSS" href="../../../rss.html" /><script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.6.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script><script type="text/javascript" src="../../../_static/underscore.js"></script><script type="text/javascript" src="../../../_static/doctools.js"></script><script type="text/javascript" src="../../../_static/disqus.js"></script><script type="text/javascript" src="../../../_static/google_analytics.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            // Scroll to content if on small screen
+            if (screen.width < 480)
+            {
+                $(document).scrollTop(document.getElementsByTagName("article")[0].offsetTop - 44);
+            }
+        });
+    </script></head>
+    <body role="document">
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+        <![endif]-->
+
+      <div id="container"><header role="banner">
+            <hgroup>
+              <h1><a href="../../../index.html">Pythonista</a></h1><h2>Blogging for Pythonistas</h2></hgroup>
+          </header>
+      <nav role="navigation">
+            <ul><li class="main-nav">
+                  <a href="../../../index.html">Home</a>
+                </li>
+              <li class="main-nav">
+                  <a href="../../../pages/about.html">Videos</a>
+                </li>
+              </ul>
+          </nav><div class="main-container" role="main"><div class="main wrapper body clearfix"><article><div class="timestamp postmeta">
+            <span>June 21, 2018</span>
+        </div>
+    <div class="section" id="represent-mathematical-formulae-programmatically">
+<h1>Represent Mathematical formulae programmatically</h1>
+<img alt="../../../_images/summation.jpg" src="../../../_images/summation.jpg" />
+<p>Hello Pythonistas , In this blog post we are trying to see how can we represent the mathematical
+formula that uses summation notation in Python. I am not really a math lover so whenever i see
+something represented in this kind of formula , i get nervous about whether i will be able to handle it
+or not.</p>
+<div class="section" id="gini-coefficient">
+<h2>Gini Coefficient</h2>
+<img alt="../../../_images/gini.png" src="../../../_images/gini.png" />
+<p>This excerpt has been taken from <a class="reference external" href="http://nbviewer.jupyter.org/url/norvig.com/ipython/Economics.ipynb">Economics simulation</a>.</p>
+<p>As seen in the formula , i goes from 1 to n which can be done using for loop  ** for i in range(n) **
+for numerator , we can see that for each i we are performing ** ( i * y[i] )
+and finally there is sum() function which is replacing the sigma.</p>
+<p>for the denominator we are not doing any alteration on each iteration we can simply invoke sum() on y</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">gini</span><span class="p">(</span><span class="n">y</span><span class="p">):</span>
+   <span class="s2">&quot;Compute the Gini coefficient (a measure of equality/inequality) in a population, y.&quot;</span>
+   <span class="n">y</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+   <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+   <span class="n">numer</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="nb">sum</span><span class="p">((</span><span class="n">i</span><span class="p">)</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
+   <span class="n">denom</span> <span class="o">=</span> <span class="n">n</span> <span class="o">*</span> <span class="nb">sum</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+   <span class="k">return</span> <span class="p">(</span><span class="n">numer</span> <span class="o">/</span> <span class="n">denom</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">n</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="chained-comparisons">
+<h2>Chained comparisons</h2>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">2</span><span class="p">]:</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">10</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">3</span><span class="p">]:</span> <span class="n">y</span> <span class="o">=</span> <span class="mi">20</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">4</span><span class="p">]:</span> <span class="mi">15</span> <span class="o">&gt;</span> <span class="n">x</span> <span class="ow">and</span> <span class="mi">15</span> <span class="o">&lt;</span> <span class="n">y</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">4</span><span class="p">]:</span> <span class="kc">True</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">5</span><span class="p">]:</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="mi">15</span> <span class="o">&lt;</span> <span class="n">y</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">5</span><span class="p">]:</span> <span class="kc">True</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="simulating-roulle-spins">
+<h2>Simulating Roulle spins</h2>
+<img alt="../../../_images/am-rollete.png" src="../../../_images/am-rollete.png" />
+<p>How to perform Six roulette wheel spins (weighted sampling with replacement)
+There are 18 Red slots , 18 black slots and 6 green slots.
+.. code:: python</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">random</span> <span class="k">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">choices</span><span class="p">([</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="s1">&#39;green&#39;</span><span class="p">],</span> <span class="p">[</span><span class="mi">18</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">k</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
+<span class="go">[&#39;red&#39;, &#39;green&#39;, &#39;black&#39;, &#39;black&#39;, &#39;red&#39;, &#39;black&#39;]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="biased-coins">
+<h2>Biased Coins</h2>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span> <span class="o">&gt;&gt;&gt;</span> <span class="c1"># Estimate the probability of getting 5 or more heads from 7 spins</span>
+ <span class="o">&gt;&gt;&gt;</span> <span class="c1"># of a biased coin that settles on heads 60% of the time.</span>
+ <span class="o">&gt;&gt;&gt;</span> <span class="n">trial</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">choices</span><span class="p">(</span><span class="s1">&#39;HT&#39;</span><span class="p">,</span> <span class="n">cum_weights</span><span class="o">=</span><span class="p">(</span><span class="mf">0.60</span><span class="p">,</span> <span class="mf">1.00</span><span class="p">),</span> <span class="n">k</span><span class="o">=</span><span class="mi">7</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;H&#39;</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">5</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">sum</span><span class="p">(</span><span class="n">trial</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10000</span><span class="p">))</span> <span class="o">/</span> <span class="mi">10000</span>
+    <span class="mf">0.4169</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+    <div class="postmeta">
+        <div class="author">
+            <span>Posted by Smital Desai</span>
+        </div>
+        <div class="categories">
+            <span>
+                Filed under:
+                <a href="../../../categories/programming.html">programming</a></span>
+        </div>
+        <div class="tags">
+            <span>
+                Tags:
+                <a href="../../../tags/math.html">math</a></span>
+        </div>
+        </div><ul class="related clearfix">
+            <li class="left"></li>
+            <li class="right"><a href="../20/random.html">Python’s random module :  Real-valued distributions</a> &raquo; </li>
+        </ul></article><aside class="sidebar"><section><div class="widget">
+    <h1>Recent Posts</h1>
+    <ul><li>
+            <a href="#">Represent Mathematical formulae programmatically</a>
+        </li><li>
+            <a href="../20/random.html">Python’s random module :  Real-valued distributions</a>
+        </li><li>
+            <a href="../13/tftp.html">Understanding TFTP protocol and write TFTP client in Python</a>
+        </li><li>
+            <a href="../12/chain_of_responsibility.html">Design Pattern : Chain of responsibility [Python]</a>
+        </li><li>
+            <a href="../11/decorator.html">Understanding decorator pattern with Python</a>
+        </li><li>
+            <a href="../10/hello_world.html">iter function with sentinnel</a>
+        </li></ul>
+</div>
+</section><section><div class="widget" id="searchbox" role="search">
+    <h1><a href="#searchbox">Search</a></h1>
+    <form action="../../../search.html" method="get">
+        <input type="text" name="q" />
+        <button type="submit"><span class="fa fa-search"></span></button>
+    </form>
+</div></section></aside></div> <!-- #main --></div> <!-- #main-container -->
+
+        <div class="footer-container" role="contentinfo"><footer class="wrapper">&copy; Copyright 2018, Smital Desai. Powered by <a href="http://www.tinkerer.me/">Tinkerer</a> and <a href="http://sphinx.pocoo.org/">Sphinx</a>.</footer></div> <!-- footer-container -->
+
+      </div> <!--! end of #container --><script type="text/javascript">    var disqus_shortname = "Smital";    disqus_count();</script><!--[if lt IE 7 ]>
+          <script src="//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.3/CFInstall.min.js"></script>
+          <script>window.attachEvent('onload',function(){CFInstall.check({mode:'overlay'})})</script>
+        <![endif]-->
+    </body>
+</html>
