@@ -19,14 +19,14 @@ Histogram is really useful tool to bucketize a given set of values into given bu
 
 .. code:: python
 
-   mport matplotlib.pyplot as plt
-   rom random import *
+   import matplotlib.pyplot as plt
+   from random import *
 
-   opulation_data = [uniform(2000, 3000) for i in range(1000)]
+   population_data = [uniform(2000, 3000) for i in range(1000)]
 
-   lt.hist(population_data, bins=30, histtype="bar", rwidth=0.8)
-   lt.title("Uniform distribution")
-   lt.show()
+   plt.hist(population_data, bins=30, histtype="bar", rwidth=0.8)
+   plt.title("Uniform distribution")
+   plt.show()
 
 .. image:: uniform.png   
 
