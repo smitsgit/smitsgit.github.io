@@ -1,5 +1,5 @@
 ============================================================
-Represent Mathematical formulae programmatically
+A little python to alleviate math programming
 ============================================================
 
 .. author:: Smital Desai
