@@ -70,6 +70,7 @@ There are 18 Red slots , 18 black slots and 6 green slots.
 -------------
 Biased Coins
 -------------
+This excerpt has been taken from `Random module documentation <https://docs.python.org/3/library/random.html#examples-and-recipes>`_
 
 .. code:: python
 
